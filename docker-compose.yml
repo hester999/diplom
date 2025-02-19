@@ -1,0 +1,38 @@
+version: '3'
+services:
+  sql_injection:
+    build: app/SQL
+    ports:
+      - "5001:5001"
+    volumes:
+      - .:/app
+    environment:
+      - FLASK_APP=app.sql_injection.app.main
+      - FLASK_ENV=development
+  xss:
+    build: ./app/xss
+    ports:
+      - "5002:5002"
+    volumes:
+      - .:/app
+    environment:
+      - FLASK_APP=app.xss.app.main
+      - FLASK_ENV=development
+  csrf:
+    build: ./app/csrf
+    ports:
+      - "5003:5003"
+    volumes:
+      - .:/app
+    environment:
+      - FLASK_APP=app.csrf.app.main
+      - FLASK_ENV=development
+  file_upload:
+    build: ./app/file-upload
+    ports:
+      - "5004:5004"
+    volumes:
+      - .:/app
+    environment:
+      - FLASK_APP=app.file_upload.app.main
+      - FLASK_ENV=development
