@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Injection Level 2</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/styles.css') }}">
+    <script src="{{ url_for('static', filename='JS/script2.js') }}" defer></script>
+</head>
+<body>
+    <header>
+        <h1>SQL Injection Level 2</h1>
+    </header>
+
+    <section class="task-section">
+        <h2>Задание:</h2>
+        <p>
+            На этом уровне вам нужно выполнить более сложную SQL-инъекцию для обхода пароля и получения данных из нескольких таблиц.
+            Используйте поле логина и пароля, чтобы попытаться провести инъекцию и получить доступ к данным.
+        </p>
+
+        <!-- Форма для инъекции -->
+        <form id="loginForm" method="POST" class="input-form">
+            <label for="login">Логин:</label>
+            <input type="text" id="login" name="login" class="input-field" placeholder="Введите логин" required><br><br>
+
+            <label for="password">Пароль:</label>
+            <input type="text" id="password" name="password" class="input-field" placeholder="Введите пароль" required><br><br>
+
+            <button type="submit" class="submit-btn">Отправить запрос</button>
+        </form>
+
+        <!-- Форма для ввода минимальной цены -->
+        <form id="answerForm" method="POST" action="/sql-injection/lvl2/answer" class="input-form" style="display:none;">
+            <h3>Введите минимальную цену для продолжения:</h3>
+            <input type="text" id="student_answer" name="student_answer" class="input-field" placeholder="Минимальная цена" required><br><br>
+            <button type="submit" class="submit-btn">Отправить ответ</button>
+        </form>
+
+        <!-- Уведомления -->
+        <div id="message" class="message-box"></div>
+    </section>
+
+    <footer>
+        <p>© 2025 Все права защищены.</p>
+    </footer>
+</body>
+</html>

@@ -1,4 +1,3 @@
-
 -- Шаг 2: Создание таблиц, если они еще не существуют
 
 -- Таблица пользователей
@@ -8,19 +7,19 @@ CREATE TABLE IF NOT EXISTS users (
     password VARCHAR(100) NOT NULL
 );
 
--- Таблица заказов
-CREATE TABLE IF NOT EXISTS orders (
-    id SERIAL PRIMARY KEY,
-    user_id INT REFERENCES users(id),
-    product_name VARCHAR(100),
-    order_date TIMESTAMP
-);
-
 -- Таблица продуктов
 CREATE TABLE IF NOT EXISTS products (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100),
     price DECIMAL(10, 2)
+);
+
+-- Таблица заказов (связь с продуктами)
+CREATE TABLE IF NOT EXISTS orders (
+    id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(id),
+    product_id INT REFERENCES products(id),  -- Изменение: добавляем связь с продуктом
+    order_date TIMESTAMP
 );
 
 -- Таблица конфиденциальных данных
@@ -80,7 +79,7 @@ BEGIN
     FOR i IN 1..200 LOOP
         FOR j IN 1..100 LOOP
             -- Добавляем заказ, если он еще не существует
-            EXECUTE 'INSERT INTO orders (user_id, product_name, order_date) SELECT $1, ''Product '' || ($2 % 100 + 1), NOW() WHERE NOT EXISTS (SELECT 1 FROM orders WHERE user_id = $1 AND product_name = ''Product '' || ($2 % 100 + 1))' USING i, j;
+            EXECUTE 'INSERT INTO orders (user_id, product_id, order_date) SELECT $1, $2, NOW() WHERE NOT EXISTS (SELECT 1 FROM orders WHERE user_id = $1 AND product_id = $2)' USING i, (j % 100 + 1);  -- Используем product_id
         END LOOP;
     END LOOP;
 END $$;

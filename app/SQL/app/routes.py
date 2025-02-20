@@ -1,9 +1,10 @@
 from flask import Blueprint, render_template, request, redirect, url_for, jsonify
 from app.SQL.app.db import get_db
+import handlers.handler_lvl1
+import handlers.handler_lvl2
 import psycopg2
 
 sql_injection_bp = Blueprint('sql_injection', __name__, template_folder='../templates', static_folder='../static')
-
 
 
 # Уровень 1
@@ -16,11 +17,12 @@ def lvl1():
         # Уязвимый запрос с конкатенацией
         if username and password:
             query = f"SELECT * FROM users WHERE username='{username}' AND password='{password}'"
-            return handle_query(query)
+            return handlers.handler_lvl1.handle_query(query)
         else:
             return jsonify({"error": "Login and password are required"}), 400
 
     return render_template('lvl1.html')
+
 
 @sql_injection_bp.route('/sql-injection/lvl1/answer', methods=['POST'])
 def lvl1_answer():
@@ -37,32 +39,53 @@ def lvl1_answer():
     else:
         return jsonify({"error": "Invalid login or password"}), 403  # Ответ 403 Forbidden
 
-# Уровень 2
-@sql_injection_bp.route('/sql-injection/lvl2', methods=['GET', 'POST'])
+
+@sql_injection_bp.route('/sql-injection/lvl2', methods=['POST', 'GET'])
 def lvl2():
     if request.method == 'POST':
-        query = request.form.get('query')
-        return handle_query(query)
+        # Получаем данные из формы
+        data = request.get_json()
+        username = data.get('login')
+        password = data.get('password')
+
+        if username and password:
+            query = f"SELECT * FROM users WHERE username='{username}' AND password='{password}'"
+            return handlers.handler_lvl2.handle_query_lvl2(query)
+        else:
+            return jsonify({"error": "Login and password are required"}), 400
     return render_template('lvl2.html')
 
-# Общая функция для выполнения запросов
-def handle_query(query):
-    """Обрабатываем SQL-запрос от пользователя с конкатенацией"""
+
+@sql_injection_bp.route('/sql-injection/lvl2/answer', methods=['POST'])
+def lvl2_answer():
     try:
-        conn = get_db()
-        cursor = conn.cursor()
+        data = request.get_json()
+        student_answer = data.get('student_answer')
 
-        # Логируем SQL-запрос перед выполнением
-        print(f"Executing query: {query}")
+        print(student_answer)
 
-        cursor.execute(query)
-        result = cursor.fetchall()
+        # Заменяем запятую на точку
+        student_answer = student_answer.replace(',', '.')
 
-        if result:
-            return jsonify({"result": result}), 200
+        con = get_db()
+        cur = con.cursor()
+        cur.execute("""
+        SELECT min(u.price) FROM
+        (SELECT * FROM users
+        INNER JOIN orders ON orders.user_id = users.id
+        INNER JOIN products ON orders.product_id = products.id
+        WHERE users.username = 'main_admin'
+        LIMIT 3) as u
+        """)
+        min_price = cur.fetchone()[0]
+
+        if min_price is None:
+            return jsonify({"error": "No data found for the minimum price."}), 404
+
+        if  student_answer == str(min_price):
+            return jsonify({"message": "Correct! Proceeding to next level."}), 200
         else:
-            return jsonify({"error": "No data found"}), 404
-
-    except psycopg2.Error as e:
-        print(f"SQL error: {str(e)}")
-        return jsonify({"error": f"SQL error: {str(e)}"}), 400
+            return jsonify({"error": "Incorrect answer. Please try again."}), 403
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return jsonify({"error": "An error occurred while processing the request."}), 500
