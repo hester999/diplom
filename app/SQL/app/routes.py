@@ -55,7 +55,6 @@ def lvl2():
             return jsonify({"error": "Login and password are required"}), 400
     return render_template('lvl2.html')
 
-
 @sql_injection_bp.route('/sql-injection/lvl2/answer', methods=['POST'])
 def lvl2_answer():
     try:

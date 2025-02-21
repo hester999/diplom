@@ -1,16 +1,15 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const form = document.querySelector('.input-form');
+    const loginForm = document.getElementById('loginForm');
+    const answerForm = document.getElementById('answerForm');
     const messageBox = document.getElementById('message');
-    const answerForm = document.getElementById("answerForm");
 
-    // Обработчик для отправки данных инъекции
-    form.addEventListener('submit', function(event) {
+    // Обработчик для отправки данных логина и пароля
+    loginForm.addEventListener('submit', function(event) {
         event.preventDefault();  // Останавливаем отправку формы
 
         const login = document.getElementById('login').value;
         const password = document.getElementById('password').value;
 
-        // Формируем объект данных
         const data = {
             login: login,
             password: password
@@ -23,23 +22,24 @@ document.addEventListener("DOMContentLoaded", function () {
             },
             body: JSON.stringify(data)  // Преобразуем объект в JSON
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Ошибка с сервером');
-            }
-            return response.json();
-        })
+        .then(response => response.json())
         .then(data => {
-            // Проверяем успешность инъекции
             if (data.result) {
-                // Если инъекция успешна, показываем сообщение и ждем введение ответа
-                messageBox.innerText = "Инъекция успешна! Пожалуйста, введите минимальную цену.";
-                messageBox.style.color = "green";
+                // Если инъекция успешна, показываем результаты
+                messageBox.innerHTML = "Инъекция успешна! Вот результаты: <br>";
+                data.result.forEach(item => {
+                    messageBox.innerHTML += `
+                        <p>Имя пользователя: ${item.username}</p>
+                        <p>Пароль: ${item.password}</p>
+                        <p>Продукт: ${item.product_name}</p>
+                        <p>Цена: ${item.price}</p>
+                        <hr>
+                    `;
+                });
 
-                // Показываем форму для ответа
+                // Показываем форму для ввода минимальной цены
                 answerForm.style.display = "block";
             } else {
-                // Ошибка инъекции
                 messageBox.innerText = data.error || "Ошибка выполнения инъекции.";
                 messageBox.style.color = "red";
             }
@@ -52,7 +52,35 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Обработчик для отправки ответа
-    if (answerForm) {
+    answerForm.addEventListener("submit", function(event) {
+        event.preventDefault();  // Останавливаем отправку формы
+
+        const studentAnswer = document.getElementById('student_answer').value;
+
+        fetch('/sql-injection/lvl2/answer', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ student_answer: studentAnswer })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                messageBox.innerText = data.message;
+                messageBox.style.color = "green";
+            } else {
+                messageBox.innerText = data.error || "Ответ неверен, попробуйте снова.";
+                messageBox.style.color = "red";
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            messageBox.innerText = "Произошла ошибка при отправке ответа.";
+            messageBox.style.color = "red";
+        });
+    });
+     if (answerForm) {
         answerForm.addEventListener("submit", function(event) {
             event.preventDefault();  // Останавливаем отправку формы
 
