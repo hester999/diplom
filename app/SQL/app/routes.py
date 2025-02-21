@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, jsonify
 from app.SQL.app.db import get_db
 import handlers.handler_lvl1
+import handlers.handler_lvl2
 import handlers.handler_lvl3
 import psycopg2
 
@@ -40,6 +41,67 @@ def lvl1_answer():
         return jsonify({"error": "Invalid login or password"}), 403  # Ответ 403 Forbidden
 
 
+
+# @sql_injection_bp.route('/sql-injection/lvl2', methods=['POST', 'GET'])
+# def lvl2():
+#     if request.method == 'POST':
+#         # Получаем данные из формы
+#         data = request.get_json()
+#         username = data.get('login')
+#         password = data.get('password')
+#
+#         if username and password:
+#             query = f"SELECT * FROM users WHERE username='{username}' AND password='{password}'"
+#             return handlers.handler_lvl2.handle_query_lvl2(query)
+#         else:
+#             return jsonify({"error": "Login and password are required"}), 400
+#     return render_template('lvl2.html')
+@sql_injection_bp.route('/sql-injection/lvl2', methods=['POST',"GET"])
+def lvl2():
+    if request.method == 'POST':
+        data = request.get_json()
+        username = data.get('login')
+        password = data.get('password')
+
+        if username and password:
+            query = f"SELECT * FROM users WHERE username='{username}' AND password='{password}'"
+            result = handlers.handler_lvl2.handle_query_lvl2(query)
+
+            if result:
+                # Получаем список таблиц из базы данных
+                con = get_db()
+                cur = con.cursor()
+                cur.execute("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'")
+                tables = [row[0] for row in cur.fetchall()]
+
+                return jsonify({
+                    "result": tables  # Отправляем список таблиц
+                }), 200
+            else:
+                return jsonify({"error": "No result found."}), 404
+    return render_template('lvl2.html')
+
+
+@sql_injection_bp.route('/sql-injection/lvl2/answer', methods=['POST'])
+def lvl2_answer():
+    student_answer = request.get_json('student_answer')
+    s = student_answer.get('student_answer')
+
+    # Получаем список всех таблиц из базы данных
+    con = get_db()
+    cur = con.cursor()
+    cur.execute("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'")
+    tables = [row[0] for row in cur.fetchall()]
+    print(tables)
+
+    # Проверяем ответ пользователя
+    correct_answer = ", ".join(tables)  # Список таблиц через запятую
+    if s == correct_answer:
+        return jsonify({"message": "Correct! Proceeding to next level."}), 200
+    else:
+        return jsonify({"error": "Incorrect answer. Please try again."}), 403
+
+
 @sql_injection_bp.route('/sql-injection/lvl3', methods=['POST', 'GET'])
 def lvl3():
     if request.method == 'POST':
@@ -54,6 +116,7 @@ def lvl3():
         else:
             return jsonify({"error": "Login and password are required"}), 400
     return render_template('lvl3.html')
+
 
 @sql_injection_bp.route('/sql-injection/lvl3/answer', methods=['POST'])
 def lvl3_answer():
