@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
             password: password
         };
 
-        fetch('/sql-injection/lvl2', {
+        fetch('/sql-injection/lvl3', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const studentAnswer = document.getElementById('student_answer').value;
 
-        fetch('/sql-injection/lvl2/answer', {
+        fetch('/sql-injection/lvl3/answer', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -87,7 +87,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const studentAnswer = document.getElementById('student_answer').value;
 
             // Отправляем ответ
-            fetch('/sql-injection/lvl2/answer', {
+            fetch('/sql-injection/lvl3/answer', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(response => {
                 if (response.ok){
                     alert("Ответ верный!")
-                    window.location.href = '/sql-injection/lvl3';
+                    window.location.href = '/sql-injection/lvl4';
                 }
                 if (!response.ok) {
                     throw new Error('Ошибка при отправке ответа');

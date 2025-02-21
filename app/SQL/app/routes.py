@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, jsonify
 from app.SQL.app.db import get_db
 import handlers.handler_lvl1
-import handlers.handler_lvl2
+import handlers.handler_lvl3
 import psycopg2
 
 sql_injection_bp = Blueprint('sql_injection', __name__, template_folder='../templates', static_folder='../static')
@@ -40,8 +40,8 @@ def lvl1_answer():
         return jsonify({"error": "Invalid login or password"}), 403  # Ответ 403 Forbidden
 
 
-@sql_injection_bp.route('/sql-injection/lvl2', methods=['POST', 'GET'])
-def lvl2():
+@sql_injection_bp.route('/sql-injection/lvl3', methods=['POST', 'GET'])
+def lvl3():
     if request.method == 'POST':
         # Получаем данные из формы
         data = request.get_json()
@@ -50,13 +50,13 @@ def lvl2():
 
         if username and password:
             query = f"SELECT * FROM users WHERE username='{username}' AND password='{password}'"
-            return handlers.handler_lvl2.handle_query_lvl2(query)
+            return handlers.handler_lvl3.handle_query_lvl3(query)
         else:
             return jsonify({"error": "Login and password are required"}), 400
-    return render_template('lvl2.html')
+    return render_template('lvl3.html')
 
-@sql_injection_bp.route('/sql-injection/lvl2/answer', methods=['POST'])
-def lvl2_answer():
+@sql_injection_bp.route('/sql-injection/lvl3/answer', methods=['POST'])
+def lvl3_answer():
     try:
         data = request.get_json()
         student_answer = data.get('student_answer')

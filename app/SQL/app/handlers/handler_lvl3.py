@@ -3,7 +3,7 @@ from flask import jsonify
 from app.SQL.app.db import get_db
 
 
-def handle_query_lvl2(query):
+def handle_query_lvl3(query):
     """Обрабатываем запрос с инъекцией"""
     try:
         conn = get_db()
