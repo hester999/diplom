@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, jsonify, send_from_directory
 from db import get_db
 import handlers.handler_lvl1
 import handlers.handler_lvl2
@@ -6,7 +6,7 @@ import handlers.handler_lvl3
 import handlers.handler_lvl4
 import psycopg2
 
-sql_injection_bp = Blueprint('sql_injection', __name__, template_folder='../templates', static_folder='../static')
+sql_injection_bp = Blueprint('sql_injection', __name__, template_folder='../templates', static_folder='/static')
 
 
 # Уровень 1

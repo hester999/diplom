@@ -1,7 +1,8 @@
-from flask import Flask
+from flask import Flask, send_from_directory
 from routes import sql_injection_bp  # Изменен путь на относительный
 
 app = Flask(__name__, static_folder='../static', template_folder='../templates')
+
 
 # Конфигурация приложения
 app.config['DATABASE'] = 'vulnerable_db'
