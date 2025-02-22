@@ -3,20 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SQL Injection Level 3</title>
+    <title>SQL Injection Level 4</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='CSS/styles.css') }}">
-    <script src="{{ url_for('static', filename='JS/script3.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='JS/script4.js') }}" defer></script>
 </head>
 <body>
     <header>
-        <h1>SQL Injection Level 3</h1>
+        <h1>SQL Injection Level 4</h1>
     </header>
 
     <section class="task-section">
         <h2>Задание:</h2>
         <p>
-            На этом уровне вам нужно получить <b>минимальную</b> цену первых трех заказов из таблицы заказов.
-            Схему таблицы можно получить, используя другие уязвимости.
+            Используя SQL-инъекцию, добавьте в таблицу <b>users</b> новую запись:
+            <br>
+            <code>имя пользователя: hacker, пароль: hacker123'</code>
         </p>
 
         <!-- Форма для инъекции -->
@@ -30,11 +31,10 @@
             <button type="submit" class="submit-btn">Отправить запрос</button>
         </form>
 
-        <!-- Форма для ввода минимальной цены -->
-        <form id="answerForm" method="POST" action="/sql-injection/lvl3/answer" class="input-form" style="display:none;">
-            <h3>Введите минимальную цену для продолжения:</h3>
-            <input type="text" id="student_answer" name="student_answer" class="input-field" placeholder="Минимальная цена" required><br><br>
-            <button type="submit" class="submit-btn">Отправить ответ</button>
+        <!-- Форма проверки -->
+        <form id="answerForm" method="POST" action="/sql-injection/lvl4/answer" class="input-form" style="display:none;">
+            <h3>Проверить успешность инъекции:</h3>
+            <button type="submit" class="submit-btn">Проверить</button>
         </form>
 
         <!-- Уведомления -->

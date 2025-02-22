@@ -1,8 +1,9 @@
 from flask import Blueprint, render_template, request, redirect, url_for, jsonify
-from app.SQL.app.db import get_db
+from db import get_db
 import handlers.handler_lvl1
 import handlers.handler_lvl2
 import handlers.handler_lvl3
+import handlers.handler_lvl4
 import psycopg2
 
 sql_injection_bp = Blueprint('sql_injection', __name__, template_folder='../templates', static_folder='../static')
@@ -42,20 +43,7 @@ def lvl1_answer():
 
 
 
-# @sql_injection_bp.route('/sql-injection/lvl2', methods=['POST', 'GET'])
-# def lvl2():
-#     if request.method == 'POST':
-#         # Получаем данные из формы
-#         data = request.get_json()
-#         username = data.get('login')
-#         password = data.get('password')
-#
-#         if username and password:
-#             query = f"SELECT * FROM users WHERE username='{username}' AND password='{password}'"
-#             return handlers.handler_lvl2.handle_query_lvl2(query)
-#         else:
-#             return jsonify({"error": "Login and password are required"}), 400
-#     return render_template('lvl2.html')
+
 @sql_injection_bp.route('/sql-injection/lvl2', methods=['POST',"GET"])
 def lvl2():
     if request.method == 'POST':
@@ -85,9 +73,10 @@ def lvl2():
 @sql_injection_bp.route('/sql-injection/lvl2/answer', methods=['POST'])
 def lvl2_answer():
     student_answer = request.get_json('student_answer')
+    print(type(student_answer))
     s = student_answer.get('student_answer')
 
-    # Получаем список всех таблиц из базы данных
+
     con = get_db()
     cur = con.cursor()
     cur.execute("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'")
@@ -144,10 +133,56 @@ def lvl3_answer():
         if min_price is None:
             return jsonify({"error": "No data found for the minimum price."}), 404
 
-        if  student_answer == str(min_price):
+        if student_answer == str(min_price):
             return jsonify({"message": "Correct! Proceeding to next level."}), 200
         else:
             return jsonify({"error": "Incorrect answer. Please try again."}), 403
     except Exception as e:
         print(f"Error: {str(e)}")
         return jsonify({"error": "An error occurred while processing the request."}), 500
+
+
+
+@sql_injection_bp.route('/sql-injection/lvl4', methods=['POST', 'GET'])
+def lvl4():
+    if request.method == 'POST':
+        # Получаем данные из формы
+        data = request.get_json()
+        username = data.get('login')
+        password = data.get('password')
+
+        if username and password:
+            # Уязвимый запрос с возможностью SQL-инъекции
+            query = f"SELECT * FROM users WHERE username='{username}' AND password='{password}'"
+            return handlers.handler_lvl4.handle_query_lvl4(query)
+        else:
+            return jsonify({"error": "Login and password are required"}), 400
+
+    return render_template('lvl4.html')
+
+@sql_injection_bp.route('/sql-injection/lvl4/answer', methods=['POST'])
+def lvl4_answer():
+    try:
+        flag  = False
+        con = get_db()
+        cur = con.cursor()
+
+        # Проверяем, существует ли запись с user_id = -1 и secret_info = 'sql-injection'
+        cur.execute("SELECT COUNT(*) FROM users WHERE username = 'hacker'")
+        count = cur.fetchone()[0]
+        print(count)
+
+        if count > 0:
+            flag = True
+            cur.execute("delete from users where username = 'hacker';")
+            con.commit()
+
+        if flag:
+            return jsonify({"message": "Injection successful! Record deleted. Proceeding to next level."}), 200
+        else:
+            return jsonify({"error": "Injection not found. Try again."}), 403
+
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return jsonify({"error": "An error occurred while processing the request."}), 500
+

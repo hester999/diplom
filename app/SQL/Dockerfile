@@ -1,16 +1,17 @@
 # Используем официальный образ Python
-FROM python:3.12-slim
+FROM python:3.12
 
-# Устанавливаем зависимости
+# Устанавливаем рабочую директорию внутри контейнера
 WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
 
-# Копируем приложение в контейнер
+# Копируем файлы проекта в контейнер
 COPY . /app
 
-# Открываем порт 5001 для SQL инъекций
-EXPOSE 5001
+# Устанавливаем зависимости
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Запускаем Flask приложение
-CMD ["python", "app/sql-injection/app/main.py"]
+# Открываем порт (если нужно, например, для Flask)
+EXPOSE 5000
+
+# Запускаем приложение
+CMD ["python", "./app/main.py"]

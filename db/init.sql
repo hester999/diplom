@@ -1,4 +1,6 @@
--- Шаг 2: Создание таблиц, если они еще не существуют
+-- CREATE DATABASE vulnerable_db;
+--
+-- \c vulnerable_db;
 
 -- Таблица пользователей
 CREATE TABLE IF NOT EXISTS users (

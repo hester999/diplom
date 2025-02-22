@@ -1,6 +1,6 @@
 from flask import jsonify
 
-from app.SQL.app.db import get_db
+from db import get_db
 
 
 def handle_query_lvl3(query):

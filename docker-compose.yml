@@ -1,38 +1,47 @@
-version: '3'
+version: '3.8'
+
 services:
-  sql_injection:
-    build: app/SQL
-    ports:
-      - "5001:5001"
-    volumes:
-      - .:/app
+  db:
+    image: postgres:latest
+    container_name: vulnerable_db
+    restart: always
     environment:
-      - FLASK_APP=app.sql_injection.app.main
-      - FLASK_ENV=development
-  xss:
-    build: ./app/xss
-    ports:
-      - "5002:5002"
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: vulnerable_db
     volumes:
-      - .:/app
-    environment:
-      - FLASK_APP=app.xss.app.main
-      - FLASK_ENV=development
-  csrf:
-    build: ./app/csrf
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
-      - "5003:5003"
-    volumes:
-      - .:/app
+      - "5432:5432"
+    networks:
+      - backend
+
+  sql-injection:
+    build:
+      context: ./app/SQL
+      dockerfile: Dockerfile
+    container_name: sql_injection_service
+    restart: always
+    depends_on:
+      - db
     environment:
-      - FLASK_APP=app.csrf.app.main
-      - FLASK_ENV=development
-  file_upload:
-    build: ./app/file-upload
+      DATABASE_URL: postgresql://admin:admin@db:5432/vulnerable_db
+    networks:
+      - backend
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx_proxy
+    restart: always
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     ports:
-      - "5004:5004"
-    volumes:
-      - .:/app
-    environment:
-      - FLASK_APP=app.file_upload.app.main
-      - FLASK_ENV=development
+      - "80:80"
+    depends_on:
+      - sql-injection
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
