@@ -36,9 +36,12 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./app/SQL/static:/app/static
+      - ./templates:/templates
+#      - ./test:/test
 #      - ./app/xss/static:/app/xss/static
 #      - ./app/csrf/static:/app/csrf/static
 #      - ./app/file-upload/static:/app/file-upload/static
+
     ports:
       - "80:80"
     depends_on:
