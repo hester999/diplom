@@ -25,7 +25,7 @@ services:
     depends_on:
       - db
     environment:
-      DATABASE_URL: postgresql://admin:admin@db:5432/vulnerable_db
+      DATABASE_URL: postgresql://admin:123@db:5432/vulnerable_db
     networks:
       - backend
 
