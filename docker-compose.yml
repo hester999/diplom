@@ -35,7 +35,7 @@ services:
     restart: always
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./app/SQL/static:/app/SQL/static  # Статика для SQL-инъекций
+      - ./app/SQL/static:/app/templates/SQL  # Статика для SQL-инъекций
       - ./templates:/app/templates    # Главная страница
       - ./app/xss/static:/app/xss/static  # Статика для XSS
       - ./app/csrf/static:/app/csrf/static  # Статика для CSRF

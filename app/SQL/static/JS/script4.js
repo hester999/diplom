@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 messageBox.innerText = data.message;
                 messageBox.style.color = "green";
                 alert("Инъекция успешно выполнена! Переход на следующий уровень.");
-                window.location.href = '/sql-injection/lvl5';
+                window.location.href = '/';
             } else {
                 messageBox.innerText = data.error || "Запись не найдена. Попробуйте снова.";
                 messageBox.style.color = "red";
