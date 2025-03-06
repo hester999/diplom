@@ -72,24 +72,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 },
                 body: JSON.stringify({ student_answer: studentAnswer })
             })
-            .then(response =>{
-                if (response.ok){
+            .then(response => {
+                if (response.ok) {
                     alert("Ответ верный!")
                     window.location.href = '/sql-injection/lvl3';
-                }
-                if (!response.ok) {
-                    throw new Error('Ошибка при отправке ответа');
-                }
-                return response.json();
-            })
-            .then(data => {
-                // Проверяем правильность ответа
-                if (data.message) {
-                    messageBox.innerText = data.message;
-                    messageBox.style.color = "green";
                 } else {
-                    messageBox.innerText = data.error || "Ответ неверен, попробуйте снова.";
-                    messageBox.style.color = "red";
+                    throw new Error('Ошибка при отправке ответа');
                 }
             })
             .catch(error => {
@@ -98,6 +86,5 @@ document.addEventListener("DOMContentLoaded", function () {
                 messageBox.style.color = "red";
             });
         });
-
     }
 });

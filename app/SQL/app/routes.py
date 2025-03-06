@@ -44,7 +44,7 @@ def lvl1_answer():
 
 
 
-@sql_injection_bp.route('/sql-injection/lvl2', methods=['POST',"GET"])
+@sql_injection_bp.route('/sql-injection/lvl2', methods=['POST', "GET"])
 def lvl2():
     if request.method == 'POST':
         data = request.get_json()
@@ -54,21 +54,15 @@ def lvl2():
         if username and password:
             query = f"SELECT * FROM users WHERE username='{username}' AND password='{password}'"
             result = handlers.handler_lvl2.handle_query_lvl2(query)
-
-            if result:
-                # Получаем список таблиц из базы данных
-                con = get_db()
-                cur = con.cursor()
-                cur.execute("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'")
-                tables = [row[0] for row in cur.fetchall()]
-
+            tables = [row for row in result]
+            if isinstance(result, list):  # Если результат — это список таблиц
                 return jsonify({
-                    "result": tables  # Отправляем список таблиц
+                    "result": tables  # Возвращаем список таблиц
                 }), 200
             else:
-                return jsonify({"error": "No result found."}), 404
-    return render_template('lvl2.html')
+                return result  # Возвращаем ошибку, если она есть
 
+    return render_template('lvl2.html')
 
 @sql_injection_bp.route('/sql-injection/lvl2/answer', methods=['POST'])
 def lvl2_answer():
