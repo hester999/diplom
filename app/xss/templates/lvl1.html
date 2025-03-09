@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XSS Level 1</title>
+    <link rel="stylesheet" href="CSS/style.css">
+    <script src="JS/script1.js" defer></script>
+</head>
+<body>
+    <header>
+        <h1>XSS Level 1</h1>
+    </header>
+
+    <section class="task-section">
+        <h2>Задание:</h2>
+        <p>
+            Введите XSS payload, чтобы выполнить JavaScript-код на странице.
+            Например: `"><script>alert('XSS')</script>`
+        </p>
+
+        <form id="xssForm" class="input-form">
+            <label for="payload">Введите XSS-инъекцию:</label>
+            <input type="text" id="payload" name="payload" class="input-field" placeholder="Введите payload" required>
+            <button type="submit" class="submit-btn">Отправить</button>
+        </form>
+
+        <div id="message" class="message-box"></div>
+
+        <!-- XSS-уязвимость: динамическое добавление пользовательского кода -->
+        <div id="xssOutput">{{ user_payload | safe }}</div>
+
+        <script>
+            // Принудительно выполняем XSS
+            let payload = '{{ user_payload | safe }}';
+            if (payload.includes("<script>")) {
+                document.write(payload);
+            }
+        </script>
+    </section>
+
+    <footer>
+        <p>© 2025 Все права защищены.</p>
+    </footer>
+</body>
+</html>

@@ -29,6 +29,20 @@ services:
     networks:
       - backend
 
+
+  xss:
+    build:
+      context: ./app/xss
+      dockerfile: Dockerfile
+    container_name: xss_service
+    restart: always
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://admin:123@db:5432/vulnerable_db
+    networks:
+      - backend
+
   nginx:
     image: nginx:latest
     container_name: nginx_proxy
@@ -37,7 +51,7 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./app/SQL/static:/app/templates/SQL  # Статика для SQL-инъекций
       - ./templates:/app/templates    # Главная страница
-      - ./app/xss/static:/app/xss/static  # Статика для XSS
+      - ./app/xss/static:/app/templates/xss  # Статика для XSS
       - ./app/csrf/static:/app/csrf/static  # Статика для CSRF
       - ./app/file-upload/static:/app/file-upload/static  # Статика для File Upload
     ports:
