@@ -55,7 +55,8 @@ services:
       - ./app/csrf/static:/app/csrf/static  # Статика для CSRF
       - ./app/file-upload/static:/app/file-upload/static  # Статика для File Upload
     ports:
-      - "80:80"
+#      - "80:80"
+      - "8080:80"
     depends_on:
       - sql-injection
     networks:

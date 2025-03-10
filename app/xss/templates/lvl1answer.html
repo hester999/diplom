@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XSS Detected!</title>
+</head>
+<body>
+    <header>
+        <h1>XSS Detected!</h1>
+    </header>
+
+    <section class="task-section">
+        <h2>Поздравляем, ваша XSS-инъекция выполнена!</h2>
+        <p>Теперь попробуйте обойти более сложные фильтры.</p>
+
+        <!-- Отображение инъекции -->
+        <div id="xssOutput">{{ payload | safe }}</div>
+
+        <script>
+            let xssPayload = '{{ payload | safe }}';
+            if (xssPayload.includes("<script>")) {
+                document.write(xssPayload);
+            }
+
+            // ✅ Проверяем, был ли вызван alert()
+            window.addEventListener("message", function(event) {
+                if (event.data === "XSS_TRIGGERED") {
+                    window.location.href = "/xss/lvl2"; // Если alert был вызван, переходим на lvl2
+                }
+            });
+
+            // ✅ Отправляем событие, если alert() был вызван
+            setTimeout(() => {
+                window.postMessage("XSS_TRIGGERED", "*");
+            }, 3000);
+        </script>
+    </section>
+
+    <footer>
+        <p>© 2025 Все права защищены.</p>
+    </footer>
+</body>
+</html>

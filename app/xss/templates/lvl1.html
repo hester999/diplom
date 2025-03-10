@@ -1,46 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>XSS Level 1</title>
     <link rel="stylesheet" href="CSS/style.css">
-    <script src="JS/script1.js" defer></script>
 </head>
 <body>
-    <header>
-        <h1>XSS Level 1</h1>
-    </header>
 
-    <section class="task-section">
-        <h2>Задание:</h2>
-        <p>
-            Введите XSS payload, чтобы выполнить JavaScript-код на странице.
-            Например: `"><script>alert('XSS')</script>`
-        </p>
+<header>
+    <h1>XSS Level 1</h1>
+</header>
 
-        <form id="xssForm" class="input-form">
-            <label for="payload">Введите XSS-инъекцию:</label>
-            <input type="text" id="payload" name="payload" class="input-field" placeholder="Введите payload" required>
-            <button type="submit" class="submit-btn">Отправить</button>
-        </form>
+<div class="task-section">
+    <h2>Задание</h2>
+    <p>В этой задаче вам нужно отправить комментарий. Однако система не обрабатывает данные корректно, и ваш код может выполниться в браузере других пользователей.</p>
 
-        <div id="message" class="message-box"></div>
+    <div class="input-form">
+        <h3>Оставьте комментарий:</h3>
+        <input type="text" id="payload" class="input-field" placeholder="Введите ваш комментарий...">
+        <button class="submit-btn" onclick="sendPayload()">Отправить</button>
+    </div>
 
-        <!-- XSS-уязвимость: динамическое добавление пользовательского кода -->
-        <div id="xssOutput">{{ user_payload | safe }}</div>
+    <div id="output" class="message-box"></div>
 
-        <script>
-            // Принудительно выполняем XSS
-            let payload = '{{ user_payload | safe }}';
-            if (payload.includes("<script>")) {
-                document.write(payload);
-            }
-        </script>
-    </section>
+    <div class="answer-form">
+        <h3>Вывод комментариев:</h3>
+        <div id="comments"></div>
+    </div>
+</div>
 
-    <footer>
-        <p>© 2025 Все права защищены.</p>
-    </footer>
+<script src="JS/script1.js"></script>
+
 </body>
 </html>

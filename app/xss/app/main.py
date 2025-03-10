@@ -10,11 +10,12 @@ app.config['USER'] = 'admin'
 app.config['PASSWORD'] = '123'
 app.config['HOST'] = 'localhost'
 app.config['PORT'] = '5432'
+app.config['SECRET_KEY'] = 'supersecretkey'
 
-# DATABASE_URL = os.getenv('DATABASE_URL', 'postgresql://admin:123@localhost:5432/vulnerable_db')
+DATABASE_URL = os.getenv('DATABASE_URL', 'postgresql://admin:123@localhost:5432/vulnerable_db')
 
 # Сохранение в конфигурации Flask
-# app.config['DATABASE_URL'] = DATABASE_URL
+app.config['DATABASE_URL'] = DATABASE_URL
 app.register_blueprint(xss)
 
 
