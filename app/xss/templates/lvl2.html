@@ -1,10 +1,56 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XSS Level 2</title>
+    <link rel="stylesheet" href="CSS/style.css">
 </head>
 <body>
+<header>
+    <h1>XSS Level 2</h1>
+</header>
+
+<div class="task-section">
+    <h2>Задание</h2>
+    <p>Ваша задача — украсть куки пользователя через хранимую XSS-уязвимость для получения доступа к данным. Система позволяет отправлять комментарии, но не фильтрует вводимые данные, что позволяет выполнить JavaScript-код. Оставьте комментарий с XSS-пейлоадом, затем зайдите на страницу <a href="/xss/lvl2/user" target="_blank">/xss/lvl2/user</a>, чтобы ваш код выполнился и отправил куки на интерфейс атакующего (доступен по адресу <a href="/attacker/" target="_blank">/attacker/</a>). После этого введите украденные куки в форму ниже, чтобы перейти на следующий уровень.</p>
+
+    <form class="input-form" method="POST">
+        <h3>Оставьте комментарий:</h3>
+        <input type="text" name="username" class="input-field" placeholder="Введите ваш логин..." required>
+        <textarea name="comment" class="input-field" placeholder="Введите ваш комментарий..." required></textarea>
+        <button type="submit" class="submit-btn">Отправить</button>
+    </form>
+
+    <div class="response-section">
+        <div class="answer-form">
+            <h3>Вывод комментариев:</h3>
+            <div id="comments">
+                {% for comment in comments %}
+                    <div class="comment">
+                        <strong>{{ comment[0] }}</strong>: {{ comment[1] | safe }}
+                        <small>({{ comment[2] }})</small>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="check-access">
+            <h3>🔒 Проверьте доступ:</h3>
+            <p>Введите украденные куки, чтобы продолжить:</p>
+            <form method="POST">
+                <div class="input-container">
+                    <input type="text" name="cookie-input" class="input-field" placeholder="Введите украденные куки...">
+                    <button type="submit" class="submit-btn">Проверить</button>
+                </div>
+                {% if error %}
+                    <div class="message-box">{{ error }}</div>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+
 
 </body>
 </html>

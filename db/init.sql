@@ -15,6 +15,12 @@ CREATE TABLE IF NOT EXISTS stolen_cookies (
     stolen_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS xss_comments (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(100) NOT NULL,
+    comment TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
 -- Таблица продуктов
 CREATE TABLE IF NOT EXISTS products (

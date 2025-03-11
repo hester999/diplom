@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XSS Level 2 - User Page</title>
+    <link rel="stylesheet" href="../CSS/style.css">
+</head>
+<body>
+<header>
+    <h1>XSS Level 2 - User Page</h1>
+</header>
+
+<div class="task-section">
+    <h2>Комментарии пользователя</h2>
+    <p>Введите имя пользователя, чтобы найти его комментарий. Если в комментарии есть XSS-пейлоад, он выполнится.</p>
+
+    <form class="input-form" method="POST">
+        <h3>Поиск комментария:</h3>
+        <div class="input-container">
+            <input type="text" name="search-username" class="input-field" placeholder="Введите имя пользователя..." required>
+            <button type="submit" class="submit-btn">Найти</button>
+        </div>
+    </form>
+
+    <div class="answer-form">
+        <h3>Найденные комментарии:</h3>
+        <div id="comments">
+            {% if search_query %}
+                {% if comments %}
+                    {% for comment in comments %}
+                        <div class="comment">
+                            <strong>{{ comment[0] }}</strong>: {{ comment[1] | safe }}
+                            <small>({{ comment[2] }})</small>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>Комментариев от пользователя <strong>{{ search_query }}</strong> не найдено.</p>
+                {% endif %}
+            {% else %}
+                <p>Введите имя пользователя для поиска.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <p><a href="/xss/lvl2">Вернуться на страницу отправки комментариев</a></p>
+</div>
+</body>
+</html>
