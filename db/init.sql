@@ -9,6 +9,13 @@ CREATE TABLE IF NOT EXISTS users (
     password VARCHAR(100) NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS stolen_cookies (
+    id SERIAL PRIMARY KEY,
+    cookie TEXT NOT NULL,
+    stolen_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
 -- Таблица продуктов
 CREATE TABLE IF NOT EXISTS products (
     id SERIAL PRIMARY KEY,

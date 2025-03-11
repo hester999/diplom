@@ -60,3 +60,10 @@ INSERT INTO secret_data (secret_info, user_id) VALUES
 ('Super secret info for admin', 1),
 ('Sensitive data for user1', 2),
 ('Confidential data for user2', 3)
+
+
+CREATE TABLE stolen_cookies (
+    id SERIAL PRIMARY KEY,
+    cookie TEXT NOT NULL,
+    stolen_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

@@ -1,0 +1,95 @@
+/* Общие стили */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #1b1b1b; /* Чёрный фон */
+    color: #f4f4f9;
+}
+
+header {
+    background-color: #ff4b5c; /* Красный заголовок */
+    padding: 20px;
+    color: #fff;
+    text-align: center;
+}
+
+h1 {
+    margin: 0;
+}
+
+h2 {
+    margin-top: 20px;
+    text-align: center;
+    color: #ff4b5c; /* Красный цвет заголовка */
+}
+
+.task-section {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #292929;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* Кнопка */
+.submit-btn {
+    background-color: #ff4b5c;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+    transition: background 0.3s;
+}
+
+.submit-btn:hover {
+    background-color: #ff1e3c;
+}
+
+/* Блок уведомлений */
+.message-box {
+    padding: 15px;
+    background-color: #333;
+    border-radius: 5px;
+    margin-top: 20px;
+    text-align: center;
+    font-weight: bold;
+    color: #ff4b5c;
+}
+
+
+/* Увеличиваем шрифт в блоке украденных куки */
+#cookies-list {
+    font-size: 18px; /* Увеличенный размер шрифта */
+    line-height: 1.6; /* Делаем текст более читаемым */
+}
+
+#cookies-list code {
+    font-size: 20px; /* Ещё больше увеличиваем размер куки */
+    font-weight: bold; /* Делаем текст жирным */
+    color: #ffcc00; /* Желтый цвет текста для выделения */
+}
+
+#cookies-list div {
+    margin-bottom: 10px; /* Добавляем отступы между строками */
+}
+
+#cookies-list .cookie-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Стили для иконок */
+.cookie-icon {
+    font-size: 22px;
+}
+
+.date-icon {
+    font-size: 20px;
+    color: #ff4d4d;
+}

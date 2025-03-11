@@ -30,6 +30,22 @@ services:
       - backend
 
 
+  attacker:
+    build:
+      context: ./app/attacker
+      dockerfile: Dockerfile
+    container_name: attacker_service
+    restart: always
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://admin:123@db:5432/vulnerable_db
+    networks:
+      - backend
+
+
+
+
   xss:
     build:
       context: ./app/xss
@@ -52,6 +68,7 @@ services:
       - ./app/SQL/static:/app/templates/SQL  # Статика для SQL-инъекций
       - ./templates:/app/templates    # Главная страница
       - ./app/xss/static:/app/templates/xss  # Статика для XSS
+      - ./app/attacker/static:/app/templates/attacker  # Статика для attacker
       - ./app/csrf/static:/app/csrf/static  # Статика для CSRF
       - ./app/file-upload/static:/app/file-upload/static  # Статика для File Upload
     ports:
