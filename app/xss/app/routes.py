@@ -117,42 +117,47 @@ def lvl2_user():
     return response
 
 
-
 @xss.route('/xss/lvl3', methods=['GET'])
 def lvl3():
     return render_template('lvl3.html')
 
-# Приём пейлоада и генерация ссылки
+
 @xss.route('/xss/user', methods=['POST'])
 def user():
     payload = request.form.get('payload', '')
     if not payload:
         return render_template('lvl3.html', error="Пейлоад не может быть пустым.")
-    link_id = utils.save_xss_link(payload)  # Используем utils.save_xss_link
+    link_id = utils.save_xss_link(payload)
     if not link_id:
         return render_template('lvl3.html', error="Ошибка при сохранении пейлоада.")
     return redirect(url_for('xss.lvl3_form', id=link_id))
 
-# Уязвимая форма и отображение ссылки
+
 @xss.route('/xss/lvl3-form', methods=['GET', 'POST'])
 def lvl3_form():
     link_id = request.args.get('id', '')
-    payload = utils.get_xss_payload(link_id) if link_id else ''  # Используем utils.get_xss_payload
+    payload = utils.get_xss_payload(link_id) if link_id else ''
     if not payload:
         payload = ''
 
-    # Если есть параметр id и это первый переход (генерация ссылки)
-    if link_id and request.referrer and 'xss/user' in str(request.referrer):
+    # Проверяем, пришли ли мы с /xss/user (первый переход)
+    if link_id and request.referrer and 'xss/user' in request.referrer:
         link = f"http://localhost:8080/xss/lvl3-form?id={link_id}"
         return render_template('lvl3_form.html', username=payload, link=link, show_link=True)
 
-    # Если это User, открывший ссылку
+    # Если это POST-запрос (проверка доступа)
     if request.method == 'POST':
         if 'username-input' in request.form and 'password-input' in request.form:
             username_input = request.form.get('username-input', '')
             password_input = request.form.get('password-input', '')
             if username_input == "user123" and password_input == "pass456":
-                return redirect(url_for('xss.lvl4'))
+                return redirect('http://localhost:8080/')
             else:
                 return render_template('lvl3_form.html', username=payload, error="Неверные данные.")
+
+    # Если это GET-запрос с id (переход по ссылке), показываем форму
+    if link_id:
+        return render_template('lvl3_form.html', username=payload, show_link=False)
+
+    # Если нет id, показываем форму по умолчанию
     return render_template('lvl3_form.html', username=payload, show_link=False)

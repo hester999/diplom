@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>XSS Level 3 Form</title>
     <link rel="stylesheet" href="CSS/style.css">
-    <script src = "JS/script3.js"></script>
 </head>
 <body>
 <header>
@@ -17,7 +16,7 @@
         <h2>Ваша вредоносная ссылка</h2>
         <p>Скопируйте ссылку ниже и отправьте её студенту (User):</p>
         <div class="message-box">
-            <a href="{{ link }}" target="_blank">{{ link }}</a>
+            <a href="{{ link }}" target="_blank" style="color: blue; text-decoration: underline;">{{ link }}</a>
         </div>
     {% else %}
         <h2>Введите свои данные</h2>
@@ -25,7 +24,7 @@
 
         <div class="input-form">
             <div class="input-container">
-                <input type="text" id="username" class="input-field" placeholder="Имя пользователя..." value="">
+                <input type="text" id="username" class="input-field" placeholder="Имя пользователя..." value="user123">
                 <input type="password" id="password" class="input-field" placeholder="Введите пароль..." value="pass456">
                 <input type="hidden" id="xss-payload" value="{{ username }}">
                 <button type="button" class="submit-btn" onclick="submitForm()">Отправить</button>
@@ -54,6 +53,6 @@
     {% endif %}
 </div>
 
-
+<script src="JS/script3.js" defer></script>
 </body>
 </html>
