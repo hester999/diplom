@@ -118,7 +118,6 @@ def lvl2_user():
 
 
 
-# Форма для ввода XSS-пейлоада
 @xss.route('/xss/lvl3', methods=['GET'])
 def lvl3():
     return render_template('lvl3.html')
@@ -129,7 +128,7 @@ def user():
     payload = request.form.get('payload', '')
     if not payload:
         return render_template('lvl3.html', error="Пейлоад не может быть пустым.")
-    link_id = utils.save_xss_link(payload)
+    link_id = utils.save_xss_link(payload)  # Используем utils.save_xss_link
     if not link_id:
         return render_template('lvl3.html', error="Ошибка при сохранении пейлоада.")
     return redirect(url_for('xss.lvl3_form', id=link_id))
@@ -138,7 +137,7 @@ def user():
 @xss.route('/xss/lvl3-form', methods=['GET', 'POST'])
 def lvl3_form():
     link_id = request.args.get('id', '')
-    payload = utils.get_xss_payload(link_id) if link_id else ''
+    payload = utils.get_xss_payload(link_id) if link_id else ''  # Используем utils.get_xss_payload
     if not payload:
         payload = ''
 
