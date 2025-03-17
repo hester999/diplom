@@ -58,9 +58,8 @@ h2 {
     margin-top: 20px;
     text-align: center;
     font-weight: bold;
-    color: #ff4b5c;
+    color: #f4f4f9;
 }
-
 
 /* Увеличиваем шрифт в блоке украденных куки */
 #cookies-list {
@@ -91,5 +90,28 @@ h2 {
 
 .date-icon {
     font-size: 20px;
+    color: #ff4d4d;
+}
+
+/* Стили для украденных учетных данных */
+#credentials-list {
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+#credentials-list .credential-item {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.user-icon {
+    font-size: 22px;
+    color: #00cc00;
+}
+
+.lock-icon {
+    font-size: 22px;
     color: #ff4d4d;
 }

