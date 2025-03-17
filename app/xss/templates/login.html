@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Логин</title>
+    <link rel="stylesheet" href="CSS/style.css">
+</head>
+<body>
+<div class="task-section">
+    <h2>Вход в систему</h2>
+    {% if error %}
+        <div class="message-box">{{ error }}</div>
+    {% endif %}
+    <form method="POST">
+        <div class="input-container">
+            <input type="text" name="username" class="input-field" placeholder="Имя пользователя..." required>
+            <input type="password" name="password" class="input-field" placeholder="Пароль..." required>
+            <button type="submit" class="submit-btn">Войти</button>
+        </div>
+    </form>
+    <p>Роли: user/userpass (жертва), attacker/attackerpass (атакующий)</p>
+</div>
+</body>
+</html>

