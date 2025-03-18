@@ -59,6 +59,19 @@ services:
     networks:
       - backend
 
+  csrf:
+    build:
+      context: ./app/csrf
+      dockerfile: Dockerfile
+    container_name: csrf_service
+    restart: always
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://admin:123@db:5432/vulnerable_db
+    networks:
+      - backend
+
   nginx:
     image: nginx:latest
     container_name: nginx_proxy
@@ -69,7 +82,7 @@ services:
       - ./templates:/app/templates    # Главная страница
       - ./app/xss/static:/app/templates/xss  # Статика для XSS
       - ./app/attacker/static:/app/templates/attacker  # Статика для attacker
-      - ./app/csrf/static:/app/csrf/static  # Статика для CSRF
+      - ./app/csrf/static:/app/templates/csrf  # Статика для CSRF
       - ./app/file-upload/static:/app/file-upload/static  # Статика для File Upload
     ports:
 #      - "80:80"

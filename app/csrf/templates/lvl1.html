@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CSRF Уровень 1</title>
+    <link rel="stylesheet" href="CSS/styles.css">
+</head>
+<body>
+    <header>
+        <h1>CSRF - Уровень 1</h1>
+    </header>
+
+    <div class="task-section">
+        <h2>Задание: Взлом пароля</h2>
+        <p>Вы авторизованы как <strong>{{ username }}</strong> с паролем <strong>{{ session.original_password }}</strong>. Напишите эксплойт для изменения пароля через CSRF. После выполнения эксплойта нажмите "Проверить", чтобы узнать, сработал ли он.</p>
+    </div>
+
+    <div class="answer-form">
+        <h2>Эксплойт</h2>
+        <form method="POST">
+            <textarea name="exploit_code" class="input-field" rows="5" placeholder="Введите ваш JS-код эксплойта здесь"></textarea>
+            <button type="submit" class="submit-btn">Запустить эксплойт</button>
+        </form>
+        <p>Пример эксплойта:
+            <code>
+                fetch('/csrf/lvl1', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'new_password=hacked123' });
+            </code>
+        </p>
+    </div>
+
+    {% if show_check %}
+    <div class="check-access">
+        <h2>Проверка результата</h2>
+        <form method="POST">
+            <div class="input-container">
+                <button type="submit" name="check" class="submit-btn">Проверить</button>
+            </div>
+        </form>
+    </div>
+    {% endif %}
+
+    {% if message %}
+    <div class="message-box">
+        {{ message }}
+    </div>
+    {% endif %}
+</body>
+</html>
