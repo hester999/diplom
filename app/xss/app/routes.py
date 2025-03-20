@@ -1,14 +1,15 @@
 from flask import Blueprint, render_template, request, redirect, url_for, jsonify, send_from_directory, session, make_response
-# from requests import session
 import db
 import utils
 
 xss = Blueprint('xss', __name__, template_folder='../templates', static_folder='../static')
 
 # Устанавливаем секретный ключ для сессии
-SECRET_KEY = "supersecretkey"  # Можно изменить на что-то сложное
+SECRET_KEY = "supersecretkey"
 SESSION_COOKIE_NAME = "xss_session"
 
+# Переменная для хранения пейлоада (для lvl1)
+user_payload = ""
 
 @xss.route('/xss/lvl1', methods=['GET', 'POST'])
 def lvl1():
@@ -24,18 +25,15 @@ def lvl1():
         "xss_vulnerable",
         "hacked_cookie",
         httponly=False,
-        samesite="Lax",  # Измените на "Lax" для теста через HTTP
-        path="/",  # Доступна для всех путей
-        secure=False  # Для HTTP
+        samesite="Lax",
+        secure=False
     )
     return response
-
 
 @xss.route('/xss/lvl1/payload', methods=['GET'])
 def get_xss_payload():
     """Возвращает сохраненный XSS-пейлоад"""
     return jsonify({"payload": user_payload})
-
 
 @xss.route('/xss/lvl1/log', methods=['POST'])
 def log_xss_execution():
@@ -45,7 +43,6 @@ def log_xss_execution():
         print(f"[XSS EXECUTED]: {data.get('payload')}")
         return jsonify({"message": "XSS executed!"}), 200
     return jsonify({"error": "Invalid request"}), 400
-
 
 @xss.route('/xss/lvl2', methods=['GET', 'POST'])
 def lvl2():
@@ -61,21 +58,29 @@ def lvl2():
                     conn.commit()
                     cur.close()
                     conn.close()
-                    return redirect(url_for('lvl2'))
+                    return redirect(url_for('xss.lvl2'))
                 except Exception as e:
                     return jsonify({"error": f"Ошибка базы данных: {str(e)}"}), 500
         elif 'cookie-input' in request.form:
             cookie = request.form.get('cookie-input', '')
             if cookie == "storage_xss=ce9LADs2aV":
-                return redirect(url_for('lvl3'))  # Переход на уровень 3
+                return redirect(url_for('xss.lvl3'))
             else:
                 return render_template('lvl2.html', comments=get_comments(), error="Неверные куки. Попробуйте снова.")
 
     comments = get_comments()
     response = make_response(render_template('lvl2.html', comments=comments))
-    # response.set_cookie("xss_vulnerable", "hacked_cookie", httponly=False, samesite="Lax", path="/", secure=False)
+    # Устанавливаем куки для lvl2
+    # Очищаем куки lvl1
+    response.set_cookie(
+        "xss_vulnerable",
+        "",
+        max_age=0,  # Устанавливаем max_age=0, чтобы удалить куки
+        httponly=False,
+        samesite="Lax",
+        secure=False
+    )
     return response
-
 
 def get_comments():
     try:
@@ -89,7 +94,6 @@ def get_comments():
         print(f"Ошибка чтения комментариев: {str(e)}")
         comments = []
     return comments
-
 
 @xss.route('/xss/lvl2/user', methods=['GET', 'POST'])
 def lvl2_user():
@@ -113,14 +117,35 @@ def lvl2_user():
                 comments = []
 
     response = make_response(render_template('lvl2_user.html', comments=comments, search_query=search_query))
-    response.set_cookie("storage_xss", "ce9LADs2aV", httponly=False, samesite="Lax", secure=False)
+    response.set_cookie(
+        "storage_xss",
+        "ce9LADs2aV",
+        httponly=False,
+        samesite="Lax",
+        secure=False
+    )
     return response
-
 
 @xss.route('/xss/lvl3', methods=['GET'])
 def lvl3():
-    return render_template('lvl3.html')
+    response = make_response(render_template('lvl3.html'))
+    response.set_cookie(
+        "xss_lvl3_cookie",
+        "lvl3_secret",
+        httponly=False,
+        samesite="Lax",
+        secure=False
+    )
 
+    response.set_cookie(
+        "storage_xss",
+        "",
+        max_age=0,
+        httponly=False,
+        samesite="Lax",
+        secure=False
+    )
+    return  response
 
 @xss.route('/xss/user', methods=['POST'])
 def user():
@@ -132,7 +157,6 @@ def user():
         return render_template('lvl3.html', error="Ошибка при сохранении пейлоада.")
     return redirect(url_for('xss.lvl3_form', id=link_id))
 
-
 @xss.route('/xss/lvl3-form', methods=['GET', 'POST'])
 def lvl3_form():
     link_id = request.args.get('id', '')
@@ -140,12 +164,10 @@ def lvl3_form():
     if not payload:
         payload = ''
 
-    # Проверяем, пришли ли мы с /xss/user (первый переход)
     if link_id and request.referrer and 'xss/user' in request.referrer:
         link = f"http://localhost:8080/xss/lvl3-form?id={link_id}"
         return render_template('lvl3_form.html', username=payload, link=link, show_link=True)
 
-    # Если это POST-запрос (проверка доступа)
     if request.method == 'POST':
         if 'username-input' in request.form and 'password-input' in request.form:
             username_input = request.form.get('username-input', '')
@@ -155,9 +177,7 @@ def lvl3_form():
             else:
                 return render_template('lvl3_form.html', username=payload, error="Неверные данные.")
 
-    # Если это GET-запрос с id (переход по ссылке), показываем форму
     if link_id:
         return render_template('lvl3_form.html', username=payload, show_link=False)
 
-    # Если нет id, показываем форму по умолчанию
     return render_template('lvl3_form.html', username=payload, show_link=False)

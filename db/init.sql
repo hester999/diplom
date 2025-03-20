@@ -10,13 +10,16 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 
+
+-- Удаляем таблицу users_csrf, если она существует
 DROP TABLE IF EXISTS users_csrf;
 
 -- Создаём таблицу users_csrf
 CREATE TABLE users_csrf (
     id SERIAL PRIMARY KEY,
     username VARCHAR(50) NOT NULL,
-    password VARCHAR(50) NOT NULL
+    password VARCHAR(50) NOT NULL,
+    email VARCHAR(100) DEFAULT 'default@example.com'  -- Добавляем поле email
 );
 
 -- Добавляем начального пользователя
@@ -27,9 +30,9 @@ VALUES ('testuser', 'test123');
 CREATE TABLE IF NOT EXISTS stolen_cookies (
     id SERIAL PRIMARY KEY,
     cookie TEXT NOT NULL,
+    token TEXT,  -- Новое поле, может быть NULL
     stolen_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
 
 CREATE TABLE IF NOT EXISTS stolen_credentials (
     id SERIAL PRIMARY KEY,

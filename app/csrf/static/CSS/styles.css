@@ -135,6 +135,85 @@ h2 {
     margin: 0 auto;
 }
 
+/* Стили для навигационного меню */
+.custom-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(90deg, #007bff, #0056b3); /* Используем цвета из текущей темы */
+    padding: 15px 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+/* Логотип/название */
+.nav-brand a {
+    color: #fff;
+    font-size: 24px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.nav-brand i {
+    margin-right: 8px;
+}
+
+/* Стили для списка ссылок */
+.nav-links {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links li {
+    margin-left: 20px;
+}
+
+.nav-links a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+    padding: 10px 15px;
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.2s;
+    display: flex;
+    align-items: center;
+}
+
+.nav-links a i {
+    margin-right: 8px;
+}
+
+.nav-links a:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.nav-links a.active {
+    background-color: #ff6f61; /* Цвет для активной страницы */
+    font-weight: bold;
+}
+
+/* Стили для ссылки "Выход" */
+.logout-link {
+    background-color: #e63946 !important;
+}
+
+.logout-link:hover {
+    background-color: #d62828 !important;
+}
+
+/* Стили для бургер-меню */
+.burger {
+    display: none;
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+}
+
 /* Адаптивный дизайн */
 @media (max-width: 768px) {
     .task-section, .input-form, .answer-form, .check-access, .message-box, #comments {
@@ -150,5 +229,35 @@ h2 {
 
     .input-container .submit-btn {
         width: 100%;
+    }
+
+    /* Адаптивность для навигационного меню */
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 70px;
+        left: 0;
+        width: 100%;
+        background: #007bff;
+        padding: 20px 0;
+    }
+
+    .nav-links.nav-active {
+        display: flex;
+    }
+
+    .nav-links li {
+        margin: 10px 0;
+        text-align: center;
+    }
+
+    .nav-links a {
+        padding: 15px;
+        font-size: 18px;
+    }
+
+    .burger {
+        display: block;
     }
 }
