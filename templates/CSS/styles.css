@@ -7,10 +7,10 @@ body {
 }
 
 header {
-    background-color: #4CAF50;
+    background-color: #1E90FF; /* Основной синий цвет */
     color: white;
     text-align: center;
-    padding: 20px;
+    padding: 40px 20px;
 }
 
 h1 {
@@ -18,11 +18,24 @@ h1 {
     font-size: 2.5rem;
 }
 
+.header-subtitle {
+    font-size: 1.2rem;
+    margin-top: 10px;
+    opacity: 0.9;
+}
+
+.header-subtitle .highlight {
+    color: #B0C4DE; /* Светло-синий цвет для выделения */
+    font-weight: bold;
+}
+
 section.intro {
     text-align: center;
     margin: 50px auto;
     padding: 20px;
-    max-width: 800px;
+    max-width: 1200px;
+    opacity: 0;
+    animation: fadeIn 1s ease-in forwards;
 }
 
 h2 {
@@ -36,24 +49,109 @@ p {
     line-height: 1.5;
 }
 
-.levels {
-    display: flex;
-    justify-content: space-around;
+/* База знаний */
+.knowledge-base {
+    text-align: center;
+    margin: 40px 0;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+}
+
+.knowledge-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
     margin-top: 30px;
 }
 
+.knowledge-card {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    opacity: 0;
+    animation: fadeIn 1s ease-in forwards;
+    animation-delay: calc(0.2s * var(--index));
+}
+
+.knowledge-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.knowledge-card h3 {
+    font-size: 1.3rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.knowledge-card p {
+    font-size: 0.95rem;
+    color: #666;
+}
+
+.knowledge-link {
+    display: inline-block;
+    margin-top: 10px;
+    color: #1E90FF; /* Синий цвет для ссылок */
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+.knowledge-link i {
+    margin-left: 5px;
+}
+
+.knowledge-link:hover {
+    color: #187BCD; /* Более тёмный синий для hover */
+}
+
+/* Стили для категорий */
+.category {
+    margin: 40px 0;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    animation: slideIn 0.8s ease-out forwards;
+    animation-delay: calc(0.2s * var(--index));
+}
+
+.category h3 {
+    font-size: 1.5rem;
+    color: #1E90FF; /* Синий цвет для заголовков категорий */
+    margin-bottom: 15px;
+}
+
+.category h3 i {
+    margin-right: 10px;
+}
+
+.levels {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 20px;
+}
+
 .level-btn {
-    background-color: #4CAF50;
+    background-color: #1E90FF; /* Основной синий цвет для кнопок */
     color: white;
-    padding: 10px 20px;
+    padding: 12px 25px;
     text-decoration: none;
     border-radius: 5px;
     font-size: 1.2rem;
-    transition: background-color 0.3s;
+    transition: transform 0.3s, background-color 0.3s;
 }
 
 .level-btn:hover {
-    background-color: #45a049;
+    background-color: #187BCD; /* Более тёмный синий для hover */
+    transform: scale(1.1) rotate(2deg);
 }
 
 /* Стиль для футера */
@@ -65,4 +163,27 @@ footer {
     position: fixed;
     bottom: 0;
     width: 100%;
+}
+
+/* Анимации */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }

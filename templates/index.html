@@ -5,23 +5,90 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Главная страница</title>
     <link rel="stylesheet" href="CSS/styles.css">
+    <!-- Подключаем Font Awesome для иконок -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="JS/script.js" defer></script>
 </head>
 <body>
     <header>
         <h1>Добро пожаловать на платформу для симуляции уязвимостей веб-приложений!</h1>
+        <p class="header-subtitle">
+            <span class="highlight">Учись находить и эксплуатировать уязвимости в безопасной среде</span>
+        </p>
     </header>
 
     <section class="intro">
-        <h2>Выберите уровень атаки</h2>
+        <h2>Выберите категорию уязвимостей</h2>
         <p>
-            На этой платформе вы можете научиться находить и использовать уязвимости веб-приложений, начиная с простых SQL-инъекций до более сложных атак.
+            На этой платформе вы можете научиться находить и использовать уязвимости веб-приложений, начиная с простых атак, таких как SQL-инъекции, и заканчивая более сложными, такими как CSRF и File Upload.
         </p>
-        <div class="levels">
-            <a href="/sql-injection/lvl1" class="level-btn">SQL Инъекция: Уровень 1</a>
-            <a href="/sql-injection/lvl2" class="level-btn">SQL Инъекция: Уровень 2</a>
-            <a href="/sql-injection/lvl3" class="level-btn">SQL Инъекция: Уровень 3</a>
-            <a href="/sql-injection/lvl4" class="level-btn">SQL Инъекция: Уровень 4</a>
+
+        <!-- База знаний -->
+        <div class="knowledge-base">
+            <h2>База знаний</h2>
+            <p>Узнайте больше о веб-уязвимостях и методах их эксплуатации.</p>
+            <div class="knowledge-items">
+                <div class="knowledge-card">
+                    <h3>SQL Injection</h3>
+                    <p>SQL-инъекция позволяет атакующему выполнить произвольные SQL-запросы, обходя авторизацию или извлекая данные из базы.</p>
+                    <a href="/knowledge/sql-injection" class="knowledge-link">Подробнее <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="knowledge-card">
+                    <h3>Cross-Site Scripting (XSS)</h3>
+                    <p>XSS позволяет вставить вредоносный JavaScript-код на страницу, который выполнится в браузере жертвы.</p>
+                    <a href="/knowledge/xss" class="knowledge-link">Подробнее <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="knowledge-card">
+                    <h3>Cross-Site Request Forgery (CSRF)</h3>
+                    <p>CSRF заставляет жертву выполнить нежелательные действия на сайте, где она аутентифицирована.</p>
+                    <a href="/knowledge/csrf" class="knowledge-link">Подробнее <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="knowledge-card">
+                    <h3>File Upload Vulnerabilities</h3>
+                    <p>Уязвимости загрузки файлов позволяют атакующему загрузить вредоносный файл и выполнить его на сервере.</p>
+                    <a href="/knowledge/file-upload" class="knowledge-link">Подробнее <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- SQL Injection -->
+        <div class="category">
+            <h3><i class="fas fa-database"></i> SQL Injection</h3>
+            <div class="levels">
+                <a href="/sql-injection/lvl1" class="level-btn">Уровень 1</a>
+                <a href="/sql-injection/lvl2" class="level-btn">Уровень 2</a>
+                <a href="/sql-injection/lvl3" class="level-btn">Уровень 3</a>
+                <a href="/sql-injection/lvl4" class="level-btn">Уровень 4</a>
+            </div>
+        </div>
+
+        <!-- XSS -->
+        <div class="category">
+            <h3><i class="fas fa-code"></i> Cross-Site Scripting (XSS)</h3>
+            <div class="levels">
+                <a href="/xss/lvl1" class="level-btn">Уровень 1</a>
+                <a href="/xss/lvl2" class="level-btn">Уровень 2</a>
+                <a href="/xss/lvl3" class="level-btn">Уровень 3</a>
+            </div>
+        </div>
+
+        <!-- CSRF -->
+        <div class="category">
+            <h3><i class="fas fa-shield-alt"></i> Cross-Site Request Forgery (CSRF)</h3>
+            <div class="levels">
+                <a href="/csrf/lvl1" class="level-btn">Уровень 1</a>
+                <a href="/csrf/lvl2" class="level-btn">Уровень 2</a>
+            </div>
+        </div>
+
+        <!-- File Upload -->
+        <div class="category">
+            <h3><i class="fas fa-file-upload"></i> File Upload</h3>
+            <div class="levels">
+                <a href="/file-upload/lvl1" class="level-btn">Уровень 1</a>
+                <a href="/file-upload/lvl2" class="level-btn">Уровень 2</a>
+                <a href="/file-upload/lvl3" class="level-btn">Уровень 3</a>
+            </div>
         </div>
     </section>
 
