@@ -55,8 +55,8 @@
         <h2>Уровень 3: Удаление файла логов с помощью Path Traversal</h2>
         <div class="instructions">
             <h3>Условие</h3>
-            <p>Сервер хранит файл логов, который нужно удалить, чтобы скрыть следы. Используй первый уровень, чтобы найти путь к файлу логов (подсказка: он находится в <code>/app/system/serverfiles/logs/</code>). Сервер принимает только файлы с расширением .jpg, и они должны быть валидными изображениями (по магическим байтам). Используй Path Traversal, чтобы сохранить файл в нужной папке. Замаскируй Python-код под .jpg файл, чтобы удалить файл логов. Уровень будет считаться пройденным, если в папке логов останется только один .jpg файл.</p>
-            <p><strong>Подсказка по Path Traversal:</strong> Базовый путь для сохранения — <code>/app/static/uploads/</code>. Чтобы сохранить файл в <code>/app/system/serverfiles/logs/</code>, используй относительный путь, например: <code>../../system/serverfiles/logs/exploit.jpg</code>.</p>
+            <p>Сервер хранит файл логов, который нужно удалить, чтобы скрыть следы. Используй первый уровень, чтобы найти путь к файлу логов: ты можешь просмотреть структуру директорий через "Список директорий" (подсказка: начни с <code>/app/system/</code>). Сервер принимает только файлы с расширением .jpg, и они должны быть валидными изображениями (по магическим байтам). Используй Path Traversal, чтобы сохранить файл в нужной папке. Замаскируй Python-код под .jpg файл, чтобы удалить файл логов. Уровень будет считаться пройденным, если в папке логов останется только один .jpg файл.</p>
+            <p><strong>Подсказка по Path Traversal:</strong> Базовый путь для сохранения — <code>/app/static/uploads/</code>. Чтобы сохранить файл в нужную папку, укажи относительный путь в поле "Имя файла для сохранения". Продвинутый способ: ты можешь использовать Path Traversal непосредственно в имени файла, подменив его в запросе (например, с помощью <code>curl</code> или Burp Suite).</p>
         </div>
 
         <!-- Форма для загрузки файла -->
@@ -64,8 +64,8 @@
             <h3>Загрузить файл</h3>
             <form method="POST" enctype="multipart/form-data" action="/file-upload/lvl3">
                 <input type="file" name="file" class="input-field" accept=".jpg" required>
-                <label for="filename">Имя файла для сохранения (используй Path Traversal):</label>
-                <input type="text" name="filename" class="input-field" placeholder="../../system/serverfiles/logs/exploit.jpg" required>
+                <label for="filename">Имя файла для сохранения (для Path Traversal):</label>
+                <input type="text" name="filename" class="input-field" placeholder="Укажи относительный путь к нужной папке">
                 <button type="submit" class="submit-btn">Загрузить</button>
             </form>
         </div>
@@ -75,7 +75,14 @@
         <div class="message-box" style="background-color: #e8f5e9; color: #2e7d32;">
             <h3>Поздравляем!</h3>
             <p>Уровень 3 пройден! Ты успешно удалил файл логов, используя Path Traversal и замаскировав код под изображение. Финальный флаг: <strong>MIREA{L0G5_CL34R3D}</strong></p>
+            <p>Вы будете перенаправлены на главную страницу через несколько секунд...</p>
         </div>
+        <!-- JavaScript для редиректа с задержкой -->
+        <script>
+            setTimeout(function() {
+                window.location.href = 'http://localhost:8080/';
+            }, 4000); // Задержка 4000 миллисекунд (4 секунды)
+        </script>
         {% endif %}
 
         <!-- Отображение результата -->

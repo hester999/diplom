@@ -204,7 +204,6 @@ def upload_file_lvl2():
 
         logger.info(f"Читаем и выполняем содержимое файла: {file_path}")
         try:
-            # Используем функцию без проверки магических байтов
             execute_file_as_code(file_path)
             if os.path.exists(schema_access_file):
                 logger.info(f"Файл {schema_access_file} существует после выполнения кода")
@@ -306,15 +305,22 @@ def upload_file_lvl3():
             logger.warning("Файл не выбран в форме загрузки")
             return render_template('lvl3.html', error='Файл не выбран.', level3_completed=level3_completed)
 
-        # Разрешены только файлы .jpg
-        if not file.filename.endswith('.jpg'):
+        # Проверяем, что имя файла заканчивается на .jpg
+        if not file.filename.lower().endswith('.jpg'):
             logger.warning(f"Попытка загрузки файла с недопустимым расширением: {file.filename}")
             return render_template('lvl3.html', error='Разрешены только файлы с расширением .jpg.',
                                    level3_completed=level3_completed)
 
-        # Уязвимость Path Traversal: получаем имя файла из формы
-        save_filename = request.form.get('filename', file.filename)
-        # Уязвимость: не очищаем путь, что позволяет Path Traversal
+        # Уязвимость Path Traversal: пытаемся получить путь из поля filename, если оно есть
+        save_filename = request.form.get('filename')
+        if save_filename:
+            # Если указано поле filename, используем его для Path Traversal
+            logger.info("Используем путь из поля filename")
+        else:
+            # Если поле filename не указано, используем имя файла (file.filename)
+            save_filename = file.filename
+            logger.info("Используем путь из имени файла")
+
         # Базовый путь — /app/static/uploads, от него пользователь может использовать ../
         save_path = os.path.join(UPLOAD_FOLDER, save_filename)
         logger.info(f"Сохраняем файл по пути: {save_path}")
@@ -346,7 +352,7 @@ def upload_file_lvl3():
         # Проверяем, что файл сохранён в папке /app/system/serverfiles/logs/
         if not os.path.abspath(save_path).startswith(os.path.abspath(LOG_FOLDER)):
             logger.warning(f"Файл {save_path} сохранён не в папке логов {LOG_FOLDER}")
-            return render_template('lvl3.html', error=f'Файл должен быть сохранён в папке {LOG_FOLDER}. Используй Path Traversal.',
+            return render_template('lvl3.html', error=f'Файл должен быть сохранён в папке {LOG_FOLDER}. Используй Path Traversal в имени файла или в поле "Имя файла для сохранения".',
                                    level3_completed=level3_completed)
 
         # Проверяем магические байты
