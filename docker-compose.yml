@@ -72,6 +72,20 @@ services:
     networks:
       - backend
 
+
+  file-upload:
+    build:
+      context: ./app/file-upload
+      dockerfile: Dockerfile
+    container_name: file_upload_service
+    restart: always
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://admin:123@db:5432/vulnerable_db
+    networks:
+      - backend
+
   nginx:
     image: nginx:latest
     container_name: nginx_proxy
@@ -83,7 +97,7 @@ services:
       - ./app/xss/static:/app/templates/xss  # Статика для XSS
       - ./app/attacker/static:/app/templates/attacker  # Статика для attacker
       - ./app/csrf/static:/app/templates/csrf  # Статика для CSRF
-      - ./app/file-upload/static:/app/file-upload/static  # Статика для File Upload
+      - ./app/file-upload/static:/app/templates/file-upload  # Статика для File Upload
     ports:
 #      - "80:80"
       - "8080:80"

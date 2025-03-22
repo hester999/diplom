@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Уровень 2: Обход защиты загрузки файлов</title>
+    <!-- Подключаем Font Awesome для иконок -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Подключаем стили для lvl2 -->
+    <link rel="stylesheet" href="CSS/lvl2.css">
+</head>
+<body>
+    <!-- Навигационная панель -->
+    <nav class="custom-nav">
+        <div class="nav-brand">
+            <a href="http://localhost:8080/"><i class="fas fa-shield-alt"></i> MIREA Lab</a>
+        </div>
+        <ul class="nav-links">
+            <li>
+                <a href="/file-upload/lvl1">
+                    <i class="fas fa-level-up-alt"></i> Уровень 1
+                </a>
+            </li>
+            <li>
+                <a href="/file-upload/lvl2" class="active">
+                    <i class="fas fa-level-up-alt"></i> Уровень 2
+                </a>
+            </li>
+            <li>
+                <a href="/file-upload/lvl3">
+                    <i class="fas fa-level-up-alt"></i> Уровень 3
+                </a>
+            </li>
+            <li>
+                <a href="/file-upload/lvl1/list_dir">
+                    <i class="fas fa-folder-open"></i> Список директорий
+                </a>
+            </li>
+            <li>
+                <a href="/file-upload/lvl1/read_file">
+                    <i class="fas fa-file-alt"></i> Чтение файла
+                </a>
+            </li>
+            <li>
+                <a href="/attacker/">
+                    <i class="fas fa-skull-crossbones"></i> Панель атакующего
+                </a>
+            </li>
+        </ul>
+        <div class="burger">
+            <i class="fas fa-bars"></i>
+        </div>
+    </nav>
+
+    <!-- Основной контент -->
+    <div class="task-section">
+        <h2>Уровень 2: Обход защиты загрузки файлов</h2>
+        <div class="instructions">
+            <h3>Условие</h3>
+            <p>Сервер разрешает загружать только файлы с расширениями .txt и .jpg. Найди способ загрузить Python-скрипт, чтобы создать файл <code>/app/secret/schema_access.txt</code> с текстом "access_granted". Это даст тебе доступ к схеме базы данных.</p>
+        </div>
+
+        <!-- Форма для загрузки файла -->
+        <div class="input-form">
+            <h3>Загрузить файл</h3>
+            <form method="POST" enctype="multipart/form-data" action="/file-upload/lvl2">
+                <input type="file" name="file" class="input-field" accept=".txt,.jpg" required>
+                <button type="submit" class="submit-btn">Загрузить</button>
+            </form>
+        </div>
+
+        <!-- Ссылка для скачивания схемы (появляется после выполнения скрипта) -->
+        {% if schema_access %}
+        <div class="input-form">
+            <h3>Скачать схему базы данных</h3>
+            <p>Доступ к схеме получен! Можешь переходить на уровень 3 <a href="/file-upload/lvl2/download_schema" download>Скачать схему</a></p>
+        </div>
+        {% endif %}
+
+        <!-- Отображение результата -->
+        {% if message %}
+        <div class="message-box" style="background-color: #e8f5e9; color: #2e7d32;">
+            <h3>Сообщение:</h3>
+            <p>{{ message }}</p>
+        </div>
+        {% endif %}
+
+        {% if error %}
+        <div class="message-box" style="background-color: #ffebee; color: #c62828;">
+            <h3>Ошибка:</h3>
+            <p>{{ error }}</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Подключаем JavaScript -->
+    <script src="JS/script1.js"></script>
+</body>
+</html>
