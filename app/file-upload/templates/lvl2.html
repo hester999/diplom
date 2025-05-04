@@ -1,11 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Уровень 2: Обход защиты загрузки файлов</title>
+    <title>Уровень 2: Обход проверки расширения</title>
     <!-- Подключаем Font Awesome для иконок -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Подключаем стили для lvl2 -->
     <link rel="stylesheet" href="CSS/lvl2.css">
+    <style>
+        /* Стили для таймера */
+        .timer-box {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f0f4f8;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.2em;
+            color: #333;
+        }
+        .timer-box span {
+            font-weight: bold;
+            color: #2e7d32;
+        }
+    </style>
 </head>
 <body>
     <!-- Навигационная панель -->
@@ -52,17 +68,23 @@
 
     <!-- Основной контент -->
     <div class="task-section">
-        <h2>Уровень 2: Обход защиты загрузки файлов</h2>
+        <h2>Уровень 2: Обход проверки расширения</h2>
         <div class="instructions">
             <h3>Условие</h3>
-            <p>Сервер разрешает загружать только файлы с расширениями .txt и .jpg. Найди способ загрузить Python-скрипт, чтобы создать файл <code>/app/secret/schema_access.txt</code> с текстом "access_granted". Это даст тебе доступ к схеме базы данных.</p>
+            <p>Сервер разрешает загружать только файлы с расширениями .jpg и .png. Найди способ обойти проверку расширения, чтобы загрузить Python-скрипт (файл с расширением .py), который создаст файл <code>/app/secret/schema_access.txt</code> с текстом "access_granted". Это даст тебе доступ к схеме базы данных.</p>
+            <p><strong>Подсказка:</strong> Попробуй использовать двойные расширения (например, <code>script.py.jpg</code>) или null-byte инъекцию (например, <code>script.py%00.jpg</code>). Фоновый процесс каждые 30 секунд проверяет директорию <code>/app/static/uploads/</code> и выполняет все .py файлы.</p>
+        </div>
+
+        <!-- Таймер -->
+        <div class="timer-box">
+            Фоновый процесс проверит .py файлы через: <span id="timer">30</span> секунд
         </div>
 
         <!-- Форма для загрузки файла -->
         <div class="input-form">
             <h3>Загрузить файл</h3>
             <form method="POST" enctype="multipart/form-data" action="/file-upload/lvl2">
-                <input type="file" name="file" class="input-field" accept=".txt,.jpg" required>
+                <input type="file" name="file" class="input-field" accept=".jpg,.png" required>
                 <button type="submit" class="submit-btn">Загрузить</button>
             </form>
         </div>
@@ -71,7 +93,7 @@
         {% if schema_access %}
         <div class="input-form">
             <h3>Скачать схему базы данных</h3>
-            <p>Доступ к схеме получен! Можешь переходить на уровень 3 <a href="/file-upload/lvl2/download_schema" download>Скачать схему</a></p>
+            <p>Доступ к схеме получен! Можешь переходить на уровень 3. <a href="/file-upload/lvl2/download_schema" download>Скачать схему</a></p>
         </div>
         {% endif %}
 
@@ -93,5 +115,24 @@
 
     <!-- Подключаем JavaScript -->
     <script src="JS/script1.js"></script>
+    <script>
+        // JavaScript для таймера
+        let secondsLeft = 30; // Начальное значение таймера (30 секунд)
+        const timerElement = document.getElementById('timer');
+
+        function updateTimer() {
+            timerElement.textContent = secondsLeft;
+            secondsLeft--;
+
+            // Если таймер достиг 0, сбрасываем его на 30 секунд
+            if (secondsLeft < 0) {
+                secondsLeft = 30;
+            }
+        }
+
+        // Обновляем таймер каждую секунду
+        updateTimer(); // Первоначальное обновление
+        setInterval(updateTimer, 1000); // Обновление каждую секунду
+    </script>
 </body>
 </html>
