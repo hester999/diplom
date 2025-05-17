@@ -27,12 +27,11 @@ def login():
                 user_id, original_password = user
                 session['user_id'] = user_id
                 session['username'] = username
-                session['original_password'] = original_password  # Сохраняем исходный пароль в сессии
+                session['original_password'] = original_password
                 session.modified = True
                 return redirect(url_for('csrf.csrf_lvl1'))
             else:
                 return render_template('login.html', message="Неверное имя пользователя или пароль!")
-
         except psycopg2.Error as e:
             return render_template('login.html', message=f"Ошибка базы данных: {str(e)}")
         finally:
@@ -60,17 +59,21 @@ def reg():
                 return render_template('reg.html', message="Пользователь с таким именем уже существует!")
 
             cur.execute("INSERT INTO users_csrf (username, password) VALUES (%s, %s) RETURNING id", (username, password))
-            user_id = cur.fetchone()[0]
+            result = cur.fetchone()
+            if result is None:
+                conn.rollback()
+                cur.close()
+                return render_template('reg.html', message="Ошибка при регистрации: не удалось получить ID пользователя.")
+            user_id = result[0]
             conn.commit()
             cur.close()
 
             session['user_id'] = user_id
             session['username'] = username
-            session['original_password'] = password  # Сохраняем исходный пароль в сессии
+            session['original_password'] = password
             session.modified = True
 
             return render_template('reg.html', message=f"Пользователь {username} успешно зарегистрирован! Теперь вы можете <a href='/csrf/login'>войти</a>.")
-
         except psycopg2.Error as e:
             return render_template('reg.html', message=f"Ошибка базы данных: {str(e)}")
         finally:
@@ -85,7 +88,7 @@ def csrf_lvl1():
         return render_template('lvl1.html', message="Пожалуйста, сначала зарегистрируйтесь и войдите через <a href='/csrf/reg'>регистрацию</a> или <a href='/csrf/login'>вход</a>!")
 
     username = session['username']
-    original_password = session.get('original_password')  # Получаем исходный пароль из сессии
+    original_password = session.get('original_password')
 
     if request.method == 'POST':
         if 'new_password' in request.form:
@@ -128,7 +131,6 @@ def csrf_lvl1():
                             conn.close()
                 else:
                     return render_template('lvl1.html', message="Эксплойт не содержит корректного new_password!", username=username)
-
             except Exception as e:
                 return render_template('lvl1.html', message=f"Ошибка выполнения эксплойта: {str(e)}", username=username)
 
@@ -138,29 +140,32 @@ def csrf_lvl1():
                 conn = db.get_db()
                 cur = conn.cursor()
                 cur.execute("SELECT password FROM users_csrf WHERE id = %s", (session['user_id'],))
-                current_password = cur.fetchone()[0]
+                result = cur.fetchone()
+                if result is None:
+                    return render_template('lvl1.html', message="Пользователь не найден!", username=username, show_check=True)
+                current_password = result[0]
                 cur.close()
 
                 if current_password == original_password:
                     message = "Эксплойт не удался: Пароль всё ещё тот же."
                     return render_template('lvl1.html', message=message, username=username, show_check=True)
                 else:
-                    # Если эксплойт успешен, перенаправляем на lvl2
                     return redirect(url_for('csrf.csrf_lvl2'))
-
             except psycopg2.Error as e:
                 return render_template('lvl1.html', message=f"Ошибка базы данных: {str(e)}", username=username, show_check=True)
             finally:
                 if conn is not None:
                     conn.close()
 
-    # Получаем ID пользователя для отображения
     conn = None
     try:
         conn = db.get_db()
         cur = conn.cursor()
         cur.execute("SELECT id FROM users_csrf WHERE username = %s", (username,))
-        user_id = cur.fetchone()[0]
+        result = cur.fetchone()
+        if result is None:
+            return render_template('lvl1.html', message="Пользователь не найден!", username=username)
+        user_id = result[0]
         cur.close()
     except psycopg2.Error as e:
         user_id = "Не удалось получить ID"
@@ -170,7 +175,6 @@ def csrf_lvl1():
 
     return render_template('lvl1.html', username=username, user_id=user_id)
 
-
 @csrf.route('/csrf/vulnerable', methods=['GET', 'POST'])
 def vulnerable():
     if 'user_id' not in session or 'username' not in session:
@@ -178,7 +182,6 @@ def vulnerable():
 
     username = session['username']
 
-    # Генерируем сессионный токен, если его нет
     if 'session_token' not in session:
         session['session_token'] = str(uuid.uuid4())
         session.modified = True
@@ -189,7 +192,6 @@ def vulnerable():
             message = "Код выполнен."
             return render_template('vulnerable.html', message=message, code=code, username=username)
 
-    # Устанавливаем куки
     response = make_response(render_template('vulnerable.html', username=username))
     response.set_cookie(
         "csrf_vulnerable_cookie",
@@ -206,18 +208,17 @@ def vulnerable():
         secure=False
     )
     return response
+
 @csrf.route('/csrf/lvl2', methods=['GET', 'POST'])
 def csrf_lvl2():
     if 'user_id' not in session or 'username' not in session:
         return render_template('lvl2.html', message="Пожалуйста, сначала зарегистрируйтесь и войдите через <a href='/csrf/reg'>регистрацию</a> или <a href='/csrf/login'>вход</a>!")
 
-    # Проверяем, есть ли session_token в сессии
     if 'session_token' not in session:
         return render_template('lvl2.html', message="Сессионный токен не найден. Пожалуйста, посетите <a href='/csrf/vulnerable'>уязвимую страницу</a> для его создания.")
 
     username = session['username']
 
-    # Получаем текущий email для отображения
     conn = None
     current_email = "Не удалось получить email"
     try:
@@ -235,16 +236,13 @@ def csrf_lvl2():
             conn.close()
 
     if request.method == 'POST':
-        # Уязвимый эндпоинт для смены email
         if 'new_email' in request.form:
             new_email = request.form['new_email']
-            # Проверяем session_token из параметра URL (для атакующего)
             received_session_token = request.args.get('session_token') or request.form.get('session_token')
 
             if not received_session_token or received_session_token != session['session_token']:
                 return render_template('lvl2.html', message="Неверный сессионный токен!", username=username, current_email=current_email)
 
-            # Если токен валиден, обновляем email
             conn = None
             try:
                 conn = db.get_db()
@@ -252,10 +250,12 @@ def csrf_lvl2():
                 cur.execute("UPDATE users_csrf SET email = %s WHERE id = %s", (new_email, session['user_id']))
                 conn.commit()
                 cur.close()
-                # Обновляем current_email после изменения
                 cur = conn.cursor()
                 cur.execute("SELECT email FROM users_csrf WHERE id = %s", (session['user_id'],))
-                current_email = cur.fetchone()[0]
+                result = cur.fetchone()
+                if result is None:
+                    return render_template('lvl2.html', message="Пользователь не найден!", username=username, show_check=True)
+                current_email = result[0]
                 cur.close()
             except psycopg2.Error as e:
                 return render_template('lvl2.html', message=f"Ошибка базы данных: {str(e)}", username=username, current_email=current_email)
@@ -265,14 +265,16 @@ def csrf_lvl2():
 
             return render_template('lvl2.html', message="Эксплойт выполнен. Нажмите 'Проверить', чтобы узнать результат.", username=username, show_check=True, current_email=current_email)
 
-        # Проверка результата
         if 'check' in request.form:
             conn = None
             try:
                 conn = db.get_db()
                 cur = conn.cursor()
                 cur.execute("SELECT email FROM users_csrf WHERE id = %s", (session['user_id'],))
-                current_email = cur.fetchone()[0]
+                result = cur.fetchone()
+                if result is None:
+                    return render_template('lvl2.html', message="Пользователь не найден!", username=username, show_check=True)
+                current_email = result[0]
                 cur.close()
 
                 if current_email == 'default@example.com':
@@ -281,12 +283,9 @@ def csrf_lvl2():
                 else:
                     message = f"Эксплойт удался: Email изменён на '{current_email}'!"
                     exploit_success = True
-                return render_template('lvl2.html', message=message, username=username, show_check=True,
-                                       current_email=current_email, exploit_success=exploit_success)
-
+                return render_template('lvl2.html', message=message, username=username, show_check=True, current_email=current_email, exploit_success=exploit_success)
             except psycopg2.Error as e:
-                return render_template('lvl2.html', message=f"Ошибка базы данных: {str(e)}", username=username,
-                                       show_check=True, current_email=current_email)
+                return render_template('lvl2.html', message=f"Ошибка базы данных: {str(e)}", username=username, show_check=True, current_email=current_email)
             finally:
                 if conn is not None:
                     conn.close()
