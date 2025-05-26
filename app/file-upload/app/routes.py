@@ -73,7 +73,7 @@ def check_and_execute_py_files():
     except Exception as e:
         logger.error(f"Ошибка в фоновом процессе: {str(e)}")
 
-# Инициализируем планировщик
+
 scheduler = BackgroundScheduler()
 scheduler.add_job(check_and_execute_py_files, 'interval', seconds=30)
 scheduler.start()

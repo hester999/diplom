@@ -86,6 +86,20 @@ services:
     networks:
       - backend
 
+
+  fixit_service:
+    build:
+      context: ./app/fix-it
+      dockerfile: Dockerfile
+    container_name: fixit_service
+    restart: always
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://admin:123@db:5432/vulnerable_db
+    networks:
+      - backend
+
   nginx:
     image: nginx:latest
     container_name: nginx_proxy
@@ -98,8 +112,11 @@ services:
       - ./app/attacker/static:/app/templates/attacker  # Статика для attacker
       - ./app/csrf/static:/app/templates/csrf  # Статика для CSRF
       - ./app/file-upload/static:/app/templates/file-upload  # Статика для File Upload
+      - ./app/fix-it/static:/app/templates/fix-it/sql  # Статика для fix-it Upload
+      - ./app/fix-it/static:/app/templates/fix-it/xss  # Статика для fix-it Upload
+      - ./app/fix-it/static:/app/templates/fix-it/csrf  # Статика для fix-it Upload
+
     ports:
-#      - "80:80"
       - "8080:80"
     depends_on:
       - sql-injection

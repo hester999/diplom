@@ -132,7 +132,7 @@ if __name__ == '__main__':
     app.run(debug=True, port=5001)
 EOL
 
-# Пример создания обработчиков для SQL инъекций (routes.py.py)
+# Пример создания обработчиков для SQL инъекций (routes_sql.py.py)
 cat > app/sql-injection/app/routes.py <<EOL
 from flask import Blueprint, render_template, request, jsonify
 from app.sql_injection.app.db import get_db

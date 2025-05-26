@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>CSRF — Уровень 1</title>
+    <link rel="stylesheet" href="CSS/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
+</head>
+<body>
+<header>
+    <h1>CSRF — Уровень 1</h1>
+</header>
+
+{% include 'nav.html' %}
+
+<div class="task-section">
+    <h2>Задание: Защитите форму от CSRF-атаки</h2>
+    <p>
+        Форма смены пароля не защищена от CSRF-атаки.
+        Злоумышленник может подменить запрос и изменить пароль без ведома пользователя.
+        Добавьте проверку <strong>CSRF-токена</strong> и вызовите функцию <code>generate_token(session)</code>.
+    </p>
+    <p><strong>Текущий токен:</strong> <code>{{ csrf_token }}</code></p>
+</div>
+
+<div class="input-form">
+    <h2>Форма смены пароля</h2>
+    <form method="POST" action="/fix-it/csrf/test">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <input type="text" name="new_password" class="input-field" placeholder="Новый пароль" required>
+        <button type="submit" class="submit-btn">Сменить</button>
+    </form>
+</div>
+
+<div class="answer-form">
+    <h2>Редактирование функции смены пароля</h2>
+    <form method="POST" action="/fix-it/csrf/patch">
+        <!-- Ace Editor -->
+        <div id="editor" style="height: 300px; width: 100%;">{{ code }}</div>
+        <textarea name="code" id="code" style="display: none;"></textarea>
+
+        <button type="submit" class="submit-btn">Применить изменения</button>
+    </form>
+</div>
+
+<div class="check-access">
+    <h2>Автоматическая проверка</h2>
+    <form method="POST" action="/fix-it/csrf/autotest">
+        <button type="submit" class="submit-btn">Проверить защиту</button>
+    </form>
+</div>
+
+{% if message %}
+<div class="message-box">
+    {{ message }}
+</div>
+{% endif %}
+
+<script>
+    const editor = ace.edit("editor");
+    editor.setTheme("ace/theme/monokai");
+    editor.session.setMode("ace/mode/python");
+
+    // Перед отправкой формы — копируем код в textarea
+    document.querySelector('.answer-form form').addEventListener('submit', function () {
+        document.getElementById('code').value = editor.getValue();
+    });
+</script>
+
+</body>
+</html>

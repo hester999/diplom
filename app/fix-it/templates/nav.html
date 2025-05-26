@@ -1,0 +1,93 @@
+<!-- Подключаем Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    .custom-nav {
+        background-color: #007bff;
+        padding: 10px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: white;
+        font-family: Arial, sans-serif;
+    }
+
+    .nav-brand a {
+        font-size: 1.2em;
+        font-weight: bold;
+        text-decoration: none;
+        color: white;
+    }
+
+    .nav-links {
+        list-style: none;
+        display: flex;
+        gap: 20px;
+        margin: 0;
+        padding: 0;
+    }
+
+    .nav-links li a {
+        text-decoration: none;
+        color: white;
+        font-weight: bold;
+        transition: 0.2s;
+    }
+
+    .nav-links li a:hover,
+    .nav-links li a.active {
+        color: #ffeb3b;
+        text-decoration: underline;
+    }
+
+    .burger {
+        display: none;
+    }
+
+    @media (max-width: 768px) {
+        .nav-links {
+            display: none;
+            flex-direction: column;
+            background: #0056b3;
+            position: absolute;
+            right: 0;
+            top: 60px;
+            width: 200px;
+            padding: 10px;
+        }
+
+        .nav-links.nav-active {
+            display: flex;
+        }
+
+        .burger {
+            display: block;
+            cursor: pointer;
+        }
+
+        .burger i {
+            color: white;
+        }
+    }
+</style>
+
+<nav class="custom-nav">
+    <div class="nav-brand">
+        <a href="/"><i class="fas fa-shield-alt"></i> MIREA Lab</a>
+    </div>
+    <ul class="nav-links">
+        <li><a href="/fix-it/sql/" class="{% if '/sql-injection' in request.path %}active{% endif %}"><i class="fas fa-database"></i> SQL Injection</a></li>
+        <li><a href="/fix-it/xss/" class="{% if '/xss' in request.path %}active{% endif %}"><i class="fas fa-code"></i> XSS</a></li>
+        <li><a href="/fix-it/csrf/" class="{% if '/csrf' in request.path %}active{% endif %}"><i class="fas fa-exchange-alt"></i> CSRF</a></li>
+        <li><a href="/fix-it/file-upload/" class="{% if '/file-upload' in request.path %}active{% endif %}"><i class="fas fa-upload"></i> File Upload</a></li>
+    </ul>
+    <div class="burger">
+        <i class="fas fa-bars"></i>
+    </div>
+</nav>
+
+<script>
+    document.querySelector('.burger').addEventListener('click', () => {
+        document.querySelector('.nav-links').classList.toggle('nav-active');
+    });
+</script>
