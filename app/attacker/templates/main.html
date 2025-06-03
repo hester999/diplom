@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Attacker Panel</title>
     <link rel="stylesheet" href="CSS/style.css">
+    <link rel="stylesheet" href="CSS/attacker.css"> <!-- Подключаем новый файл -->
 </head>
 <body>
 <header>
@@ -19,8 +20,11 @@
             <b>🕵️‍♂️ Украденные куки:</b><br><br>
             {% for cookie in cookies %}
                 <div class="cookie-item">
-                    <span class="cookie-icon">🍪</span> <code>{{ cookie[0] }}</code> <br>
-                    <span class="date-icon">📅</span> <b>Дата:</b> {{ cookie[1] }} <br>
+                    <span class="id-icon">🆔</span> <strong>ID:</strong> {{ cookie[0] }} <br>
+                    <span class="cookie-icon">🍪</span> <strong>Куки:</strong> <br>
+                    <code>{{ cookie[1] }}</code> <br>
+                    <span class="token-icon">🔑</span> <strong>CSRF-токен:</strong> {{ cookie[2] if cookie[2] else "Не украден" }} <br>
+                    <span class="date-icon">📅</span> <b>Дата:</b> {{ cookie[3] }} <br>
                 </div>
             {% endfor %}
         {% else %}
@@ -35,9 +39,10 @@
             <b>🕵️‍♂️ Украденные учетные данные:</b><br><br>
             {% for cred in credentials %}
                 <div class="credential-item">
-                    <span class="user-icon">👤</span> <strong>Username:</strong> {{ cred[0] }} <br>
-                    <span class="lock-icon">🔒</span> <strong>Password:</strong> {{ cred[1] }} <br>
-                    <span class="date-icon">📅</span> <b>Дата:</b> {{ cred[2] }} <br>
+                    <span class="id-icon">🆔</span> <strong>ID:</strong> {{ cred[0] }} <br>
+                    <span class="user-icon">👤</span> <strong>Username:</strong> {{ cred[1] }} <br>
+                    <span class="lock-icon">🔒</span> <strong>Password:</strong> {{ cred[2] }} <br>
+                    <span class="date-icon">📅</span> <b>Дата:</b> {{ cred[3] }} <br>
                 </div>
             {% endfor %}
         {% else %}

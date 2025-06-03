@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CSRF Уровень 2</title>
+    <link rel="stylesheet" href="CSS/styles.css">
+</head>
+<body>
+    <header>
+        <h1>CSRF - Уровень 2</h1>
+    </header>
+
+    {% include 'nav.html' %}
+
+    <div class="task-section">
+        <h2>Задание: Взлом email</h2>
+        <p>Вы авторизованы как <strong>{{ username }}</strong>.</p>
+        <p>Текущий email: <strong>{{ current_email }}</strong>.</p>
+        <p>Украдите сессионный токен жертвы через XSS на уязвимой странице и используйте его, чтобы изменить email (например, на 'hacked@example.com').</p>
+    </div>
+
+    <div class="input-form">
+        <h2>Смена email</h2>
+        <form method="POST">
+            <div class="input-container">
+                <input type="email" name="new_email" class="input-field" placeholder="Новый email" required>
+                <button type="submit" class="submit-btn">Сменить email</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="answer-form">
+        <h2>CSRF Эксплойт</h2>
+        <form method="POST">
+            <input type="email" name="new_email" class="input-field" placeholder="Введите новый email" required>
+            <input type="text" name="session_token" class="input-field" placeholder="Введите сессионный токен" required>
+            <button type="submit" class="submit-btn">Запустить эксплойт</button>
+        </form>
+        <p>Или используйте URL-запрос, например:
+            <code>
+                http://localhost:8080/csrf/lvl2?session_token=&lt;украденный_токен&gt;&amp;new_email=hacked@example.com
+            </code>
+        </p>
+    </div>
+
+    {% if show_check %}
+    <div class="check-access">
+        <h2>Проверка результата</h2>
+        <form method="POST">
+            <div class="input-container">
+                <button type="submit" name="check" class="submit-btn">Проверить</button>
+            </div>
+        </form>
+    </div>
+    {% endif %}
+
+    {% if message %}
+    <div class="message-box">
+        <p>Результат выполнения кода:</p>
+        <pre>{{ message }}</pre>
+    </div>
+    {% endif %}
+
+    <!-- JavaScript для перенаправления -->
+    {% if exploit_success is defined and exploit_success %}
+    <script>
+        setTimeout(function() {
+            window.location.href = '/'; // Перенаправление на главную страницу
+        }, 3000); // Задержка 3 секунды
+    </script>
+    {% endif %}
+</body>
+</html>

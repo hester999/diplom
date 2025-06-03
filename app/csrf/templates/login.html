@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Вход</title>
+    <link rel="stylesheet" href="CSS/styles.css">
+</head>
+<body>
+    <header>
+        <h1>CSRF - Вход</h1>
+    </header>
+
+    <div class="task-section">
+        <h2>Форма входа</h2>
+        <p>Введите имя пользователя и пароль, чтобы войти в систему.</p>
+    </div>
+
+    <div class="input-form">
+        <h2>Вход в систему</h2>
+        <form method="POST">
+            <div class="input-container">
+                <input type="text" name="username" class="input-field" placeholder="Имя пользователя" required>
+                <input type="password" name="password" class="input-field" placeholder="Пароль" required>
+                <button type="submit" class="submit-btn">Войти</button>
+            </div>
+        </form>
+    </div>
+
+    {% if message %}
+    <div class="message-box">
+        {{ message }}
+    </div>
+    {% endif %}
+
+    <div class="task-section">
+        <p>Ещё не зарегистрированы? <a href="/csrf/reg">Зарегистрируйтесь здесь</a>.</p>
+    </div>
+</body>
+</html>

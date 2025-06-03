@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Подключаем Font Awesome для иконок -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="custom-nav">
+        <div class="nav-brand">
+            <a href="/"><i class="fas fa-shield-alt"></i>MIREA Lab</a>
+        </div>
+        <ul class="nav-links">
+            <li>
+                <a href="/csrf/reg" class="{% if request.path == '/csrf/reg' %}active{% endif %}">
+                    <i class="fas fa-user-plus"></i> Регистрация
+                </a>
+            </li>
+            <li>
+                <a href="/csrf/login" class="{% if request.path == '/csrf/login' %}active{% endif %}">
+                    <i class="fas fa-sign-in-alt"></i> Вход
+                </a>
+            </li>
+            {% if session.user_id %}
+            <li>
+                <a href="/csrf/lvl1" class="{% if request.path == '/csrf/lvl1' %}active{% endif %}">
+                    <i class="fas fa-level-up-alt"></i> Уровень 1
+                </a>
+            </li>
+            <li>
+                <a href="/csrf/lvl2" class="{% if request.path == '/csrf/lvl2' %}active{% endif %}">
+                    <i class="fas fa-level-up-alt"></i> Уровень 2
+                </a>
+            </li>
+            <li>
+                <a href="/csrf/vulnerable" class="{% if request.path == '/csrf/vulnerable' %}active{% endif %}">
+                    <i class="fas fa-bug"></i> Уязвимая страница
+                </a>
+            </li>
+            {% endif %}
+            <li>
+                <a href="/attacker/" class="{% if request.path == '/attacker' %}active{% endif %}">
+                    <i class="fas fa-skull-crossbones"></i> Панель атакующего
+                </a>
+            </li>
+            {% if session.user_id %}
+            <li>
+                <a href="/csrf/logout" class="logout-link">
+                    <i class="fas fa-sign-out-alt"></i> Выход
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+        <!-- Бургер-меню для мобильных устройств -->
+        <div class="burger">
+            <i class="fas fa-bars"></i>
+        </div>
+    </nav>
+
+    <script>
+        // JavaScript для бургер-меню
+        document.querySelector('.burger').addEventListener('click', () => {
+            document.querySelector('.nav.html-links').classList.toggle('nav.html-active');
+            document.querySelector('.burger i').classList.toggle('fa-bars');
+            document.querySelector('.burger i').classList.toggle('fa-times');
+        });
+    </script>
+</body>
+</html>

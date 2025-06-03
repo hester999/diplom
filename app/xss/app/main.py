@@ -4,13 +4,6 @@ import os
 app = Flask(__name__, static_folder='../static', template_folder='../templates')
 
 
-# # Конфигурация приложения
-# app.config['DATABASE'] = 'vulnerable_db'
-# app.config['USER'] = 'admin'
-# app.config['PASSWORD'] = '123'
-# app.config['HOST'] = 'localhost'
-# app.config['PORT'] = '5432'
-# app.config['SECRET_KEY'] = 'supersecretkey'
 
 DATABASE_URL = os.getenv('DATABASE_URL', 'postgresql://admin:123@localhost:5432/vulnerable_db')
 

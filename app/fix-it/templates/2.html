@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>XSS — Уровень 1</title>
+    <link rel="stylesheet" href="CSS/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
+</head>>
+<body>
+<header>
+    <h1>XSS - Уровень 1</h1>
+</header>
+
+{% include 'nav.html' %}
+
+<div class="task-section">
+    <h2>Задание: Исправить XSS</h2>
+    <p>Сейчас комментарии сохраняются как есть. Попробуйте оставить XSS-пейлоад, а затем измените функцию так, чтобы он больше не выполнялся.</p>
+</div>
+
+<div class="input-form">
+    <h2>Добавить комментарий</h2>
+    <form method="POST" action="/fix-it/xss/test">
+        <input type="text" name="username" class="input-field" placeholder="Имя" required>
+        <textarea name="comment" class="input-field" placeholder="Комментарий..." required></textarea>
+        <button type="submit" class="submit-btn">Сохранить</button>
+    </form>
+</div>
+
+<div class="answer-form">
+    <h2>Редактирование уязвимой функции</h2>
+    <form method="POST" action="/fix-it/xss/patch">
+        <div id="editor" style="height: 300px; width: 100%; border: 1px solid #ccc; font-size: 14px;">{{ code }}</div>
+        <textarea name="code" id="code" style="display: none;"></textarea>
+        <button type="submit" class="submit-btn">Применить изменения</button>
+    </form>
+</div>
+
+<div class="check-access">
+    <h2>Автоматическая проверка</h2>
+    <form method="POST" action="/fix-it/xss/autotest">
+        <button type="submit" class="submit-btn">Проверить</button>
+    </form>
+</div>
+
+{% if message %}
+<div class="message-box">
+    {{ message }}
+</div>
+{% endif %}
+
+<div class="answer-form">
+    <h2>Сохранённые комментарии</h2>
+    {% for user, comment in comments %}
+        <p><strong>{{ user }}</strong>: {{ comment | safe }}</p>
+    {% endfor %}
+</div>
+
+<script>
+    const editor = ace.edit("editor");
+    editor.setTheme("ace/theme/github");
+    editor.session.setMode("ace/mode/python");
+
+    document.querySelector('form[action="/fix-it/xss/patch"]').addEventListener("submit", function () {
+        document.getElementById("code").value = editor.getValue();
+    });
+</script>
+
+</body>
+</html>

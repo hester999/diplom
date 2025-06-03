@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Уровень 1: Загрузка файлов</title>
+    <!-- Подключаем Font Awesome для иконок -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Подключаем стили -->
+    <link rel="stylesheet" href="CSS/style.css">
+</head>
+<body>
+    <!-- Навигационная панель -->
+    <nav class="custom-nav">
+        <div class="nav-brand">
+            <a href="http://localhost:8080/"><i class="fas fa-shield-alt"></i> MIREA Lab</a>
+        </div>
+        <ul class="nav-links">
+            <li>
+                <a href="/file-upload/lvl1" class="active">
+                    <i class="fas fa-level-up-alt"></i> Уровень 1
+                </a>
+            </li>
+            <li>
+                <a href="/file-upload/lvl2">
+                    <i class="fas fa-level-up-alt"></i> Уровень 2
+                </a>
+            </li>
+            <li>
+                <a href="/file-upload/lvl3">
+                    <i class="fas fa-level-up-alt"></i> Уровень 3
+                </a>
+            </li>
+            <li>
+                <a href="/file-upload/lvl1/list_dir">
+                    <i class="fas fa-folder-open"></i> Список директорий
+                </a>
+            </li>
+            <li>
+                <a href="/file-upload/lvl1/read_file">
+                    <i class="fas fa-file-alt"></i> Чтение файла
+                </a>
+            </li>
+            <li>
+                <a href="/attacker/">
+                    <i class="fas fa-skull-crossbones"></i> Панель атакующего
+                </a>
+            </li>
+        </ul>
+        <div class="burger">
+            <i class="fas fa-bars"></i>
+        </div>
+    </nav>
+
+    <!-- Основной контент -->
+    <div class="task-section">
+        <h2>Уровень 1: Загрузка файлов без проверки</h2>
+        <div class="input-form">
+            <form method="POST" enctype="multipart/form-data" action="/file-upload/lvl1">
+                <input type="file" name="file" class="input-field" required>
+                <button type="submit" class="submit-btn">Загрузить</button>
+            </form>
+        </div>
+
+        <!-- Инструкции -->
+        <div class="instructions">
+            <h3>Инструкции</h3>
+            <p>Сначала загрузите файл, чтобы получить доступ к списку директорий и чтению файлов.</p>
+            <p>После загрузки файла ты сможешь: <br>
+               - Проверить список директорий. Попробуй выйти за пределы папки uploads (например, добавить в URL ?path=/app/secret).<br>
+               - Читать содержимое файлов через форму. Тебе нужно будет самостоятельно сформировать путь к файлу с UUID.<br>
+               Найти эти функции можно в верхнем меню: "Список директорий" и "Чтение файла".</p>
+        </div>
+
+        <!-- Форма для ввода пароля -->
+        <div class="input-form">
+            <h3>Перейти на Уровень 2</h3>
+            <p>Введи пароль, чтобы получить доступ к следующему уровню. Подсказка: пароль — это UUID, спрятанный в файле на сервере.</p>
+            <form method="POST" action="/file-upload/lvl1">
+                <input type="text" name="password" class="input-field" placeholder="Введите UUID" required>
+                <button type="submit" class="submit-btn">Проверить</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Подключаем JavaScript -->
+    <script src="JS/script1.js"></script>
+</body>
+</html>

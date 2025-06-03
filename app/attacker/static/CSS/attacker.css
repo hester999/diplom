@@ -1,0 +1,95 @@
+/* Дополнительные стили для Attacker Panel */
+.task-section {
+    max-width: 1000px; /* Увеличиваем ширину контейнера */
+    background: linear-gradient(145deg, #292929, #1f1f1f); /* Градиентный фон */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.7); /* Более глубокая тень */
+    border: 1px solid #ff4b5c; /* Красная рамка для акцента */
+}
+
+.message-box {
+    background: linear-gradient(145deg, #333, #2a2a2a); /* Градиентный фон */
+    border: 1px solid #444; /* Тёмная рамка */
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5); /* Внутренняя тень */
+    transition: all 0.3s ease; /* Плавный переход для эффектов */
+}
+
+.message-box:hover {
+    box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.7), 0 4px 8px rgba(0, 0, 0, 0.5); /* Усиленная тень при наведении */
+}
+
+.cookie-item, .credential-item {
+    background: #3a3a3a; /* Тёмный фон для элементов */
+    border-radius: 8px; /* Закруглённые углы */
+    padding: 15px; /* Увеличенные отступы */
+    margin-bottom: 15px; /* Больший отступ между элементами */
+    border-left: 4px solid #ff4b5c; /* Красная полоса слева для акцента */
+    transition: transform 0.2s, box-shadow 0.2s; /* Плавные эффекты */
+}
+
+.cookie-item:hover, .credential-item:hover {
+    transform: translateY(-3px); /* Лёгкий подъём при наведении */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.6); /* Более глубокая тень */
+}
+
+.cookie-item code {
+    background: #1a1a1a; /* Тёмный фон для кода */
+    border-radius: 5px; /* Закруглённые углы */
+    padding: 8px; /* Отступы внутри кода */
+    display: block; /* Блочный элемент */
+    margin: 5px 0; /* Отступы сверху и снизу */
+    font-size: 18px; /* Увеличенный шрифт */
+    color: #ffcc00; /* Жёлтый цвет текста */
+}
+
+.cookie-item strong, .credential-item strong {
+    color: #ffaa55; /* Яркий оранжевый цвет для заголовков */
+}
+
+.id-icon, .cookie-icon, .token-icon, .date-icon, .user-icon, .lock-icon {
+    transition: transform 0.3s; /* Плавная анимация для иконок */
+}
+
+.cookie-item:hover .id-icon,
+.cookie-item:hover .cookie-icon,
+.cookie-item:hover .token-icon,
+.cookie-item:hover .date-icon,
+.credential-item:hover .id-icon,
+.credential-item:hover .user-icon,
+.credential-item:hover .lock-icon,
+.credential-item:hover .date-icon {
+    transform: scale(1.3); /* Увеличение иконок при наведении */
+}
+
+.token-icon {
+    color: #00cc00; /* Зелёный цвет для иконки CSRF-токена */
+}
+
+.submit-btn {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4); /* Тень для кнопки */
+    font-weight: bold; /* Жирный шрифт */
+}
+
+.submit-btn:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6); /* Усиленная тень при наведении */
+    transform: translateY(-2px); /* Лёгкий подъём кнопки */
+}
+
+h2 {
+    position: relative; /* Для псевдоэлемента */
+    display: inline-block; /* Чтобы подчёркивание соответствовало длине текста */
+}
+
+h2::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(to right, #ff4b5c, #ff1e3c); /* Градиентное подчёркивание */
+}
+
+b {
+    font-size: 1.2em; /* Увеличенный шрифт для заголовков */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Тень для текста */
+}

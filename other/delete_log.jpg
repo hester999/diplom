@@ -1,0 +1,4 @@
+ÿØÿ
+
+import os
+os.remove('/app/system/serverfiles/logs/active.log')

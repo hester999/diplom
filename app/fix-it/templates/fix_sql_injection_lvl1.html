@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>SQL Injection — Уровень 1</title>
+    <link rel="stylesheet" href="CSS/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
+</head>
+<body>
+<header>
+    <h1>SQL Injection - Уровень 1</h1>
+</header>
+
+{% include 'nav.html' %}
+
+<div class="task-section">
+    <h2>Задание: Исправить SQL-инъекцию</h2>
+    <p>Форма авторизации содержит уязвимость. Попробуйте авторизоваться с помощью SQL-инъекции:</p>
+    <p><code>' OR 1=1 --</code></p>
+    <p>Затем отредактируйте код запроса так, чтобы SQL-инъекция не срабатывала.</p>
+</div>
+
+<div class="input-form">
+    <h2>Форма авторизации</h2>
+    <form method="POST" action="/fix-it/sql/test">
+        <input type="text" name="username" class="input-field" placeholder="Имя пользователя" required>
+        <input type="password" name="password" class="input-field" placeholder="Пароль" required>
+        <button type="submit" class="submit-btn">Войти</button>
+    </form>
+</div>
+
+<div class="answer-form">
+    <h2>Редактирование функции авторизации</h2>
+    <form method="POST" action="/fix-it/sql/patch">
+        <div id="editor" style="height: 300px; width: 100%; border: 1px solid #ccc;">{{ code }}</div>
+        <textarea name="code" id="code" style="display: none;"></textarea>
+        <button type="submit" class="submit-btn">Применить изменения</button>
+    </form>
+</div>
+
+<div class="check-access">
+    <h2>Автоматическая проверка</h2>
+    <form method="POST" action="/fix-it/sql/autotest">
+        <button type="submit" class="submit-btn">Проверить на SQL-инъекцию</button>
+    </form>
+</div>
+
+{% if message %}
+<div class="message-box">
+    {{ message }}
+</div>
+{% endif %}
+
+<script>
+    const editor = ace.edit("editor");
+    editor.setTheme("ace/theme/github");
+    editor.session.setMode("ace/mode/python");
+
+    document.querySelector('form[action="/fix-it/sql/patch"]').addEventListener("submit", function () {
+        document.getElementById("code").value = editor.getValue();
+    });
+</script>
+</body>
+</html>
