@@ -86,6 +86,7 @@ def check(session, cursor, code_patch):
     if 'generate_token' not in local or 'change_password' not in local:
         return False, "❌ Не найдены функции generate_token или change_password"
 
+
     token = local['generate_token'](session)
 
     try:

